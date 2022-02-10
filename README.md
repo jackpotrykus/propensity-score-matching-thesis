@@ -19,4 +19,4 @@ __TODO__: Sort into categories (background, scoring methods, matching algos, etc
 
 # Matching algorithms
 * [Hungarian algorithm](https://en.wikipedia.org/wiki/Hungarian_algorithm)
-
+* [Bipartite Matching & the Hungarian Method](http://www.columbia.edu/~cs2035/courses/ieor6614.S16/GolinAssignmentNotes.pdf)
