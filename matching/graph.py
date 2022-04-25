@@ -38,12 +38,12 @@ class BipartiteGraphParameters:
         Name of column to add to the graph data, indicating which match the observation belongs to
     """
 
-    init_weight: float = 1
-    treatment_bipartite_attr: Hashable = 1
-    control_bipartite_attr: Hashable = 0
-    treatment_color: str = "red"
-    control_color: str = "blue"
-    match_group_col: str = "match_group"
+    init_weight: float = field(default=1)
+    treatment_bipartite_attr: Hashable = field(default=1)
+    control_bipartite_attr: Hashable = field(default=0)
+    treatment_color: str = field(default="red")
+    control_color: str = field(default="blue")
+    match_group_col: str = field(default="match_group")
 
 
 class MatchingMethod(enum.Enum):
@@ -115,7 +115,7 @@ class MatchingGraph:
     def __init__(
         self, X: npt.ArrayLike, z: npt.ArrayLike, ids: Optional[npt.ArrayLike] = None, *, init_naive_graph: bool = False
     ) -> None:
-        """Initialize a ``Similarity`` object with necessary data
+        """Initialize a :class:`MatchingGraph` object with necessary data
 
         Parameters
         ----------
