@@ -88,13 +88,14 @@ class MatchingGraph:
     Attributes
     ----------
     input_data: :class:`MatchingDataset`
-        The data which is supplied to the constructor (X, z, ids) is parsed into an ``input_data`` object, with attributes
-        ``X``, ``z``, and ``ids`. You can convert this to a ``pd.DataFrame`` via ``<MatchingGraph>.input_data.frame``
+        The data which is supplied to the constructor (``X``, ``z``, ``ids``) is parsed into an ``input_data`` object, 
+        with attributes ``X``, ``z``, and ``ids`. 
+        You can convert this to a ``pd.DataFrame`` via ``<MatchingGraphInst>.input_data.frame``
     graph_data: :class:`MatchingDataset`
-        Just the data for the nodes currently present on the graph. Has all the same properties as ``input_data``. Notes
-        that this is a derived property that is re-calculated each time it is accessed.
+        Just the data for the nodes currently present on the graph. Has all the same properties as ``input_data``. 
+        Note that this is a derived property that is re-calculated each time it is accessed.
     match_data: :class:`MatchingDataset`
-        This is the same as ``graph_data``, except it adds an additional column to ``X``: "match_group", an integer number
+        This is the same as ``graph_data``, except it adds an additional column to ``X``: "match_group", an integer
         indicating which matched subgraph the match belongs to
     graph: nx.Graph
         Bipartite graph, where nodes represent observation IDs and edge weights correspond to the cost of matching
