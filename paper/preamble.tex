@@ -1,0 +1,77 @@
+\usepackage[utf8]{inputenc}
+
+\renewcommand{\familydefault}{\sfdefault}
+\setlength\parindent{0pt}
+
+\usepackage{sansmath}
+\sansmath
+
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[colorlinks]{hyperref}
+\usepackage{parskip}
+\usepackage{listings}
+\usepackage{titling}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+
+\newcommand*\ttvar[1]{\texttt{\expandafter\dottvar\detokenize{#1}\relax}}
+\newcommand*\dottvar[1]{\ifx\relax#1\else
+  \expandafter\ifx\string_#1\string_\allowbreak\else#1\fi
+  \expandafter\dottvar\fi}
+
+% Listings env preferences
+\lstset{
+    basicstyle=\small\ttfamily,
+    columns=flexible,
+    breaklines=true
+}
+
+% Page styling
+\makeatletter
+\let\thetitle\@title
+\let\theauthor\@author
+\let\thedate\@date
+\makeatother
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+\lhead{\theauthor}
+\rhead{\thetitle}
+% \rhead{\thedate}
+\usepackage{lastpage}
+\cfoot{\thepage}
+\lfoot{}
+\rfoot{}
+
+\newcommand{\pyfunction}[1]{{\color{BurntOrange}\ttvar{#1}}\defaultcolor}
+\newcommand{\pyvariable}[1]{{\color{RoyalPurple}\ttvar{#1}}\defaultcolor}
+\newcommand{\pyparameter}[1]{{\color{ForestGreen}\ttvar{#1}}\defaultcolor}
+
+% `answer` box: more customizable
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\newtcolorbox{solution}[1][]
+{
+  breakable,
+  enhanced,
+  sharpish corners,
+  boxrule     = 0.25mm,
+  boxsep      = 5pt,
+  left        = 5pt,
+  right       = 5pt,
+  top         = 0pt,
+  bottom      = 5pt,
+  parbox      = false,
+  colframe    = ForestGreen!30!black,
+  colback     = ForestGreen!5,
+  coltitle    = white,
+  toptitle    = 0pt,
+  bottomtitle = 0pt,
+  title       = {\bfseries Solution},
+  #1,
+}
+
+\allowdisplaybreaks

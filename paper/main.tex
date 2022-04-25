@@ -1,0 +1,78 @@
+\documentclass[11pt]{extarticle}
+
+
+\title{Assessing the Performance of Matching Methods in Observational Studies}
+\author{Jack Potrykus}
+\date{\today}
+
+\input{preamble.tex}
+
+\begin{document}
+
+
+\maketitle
+
+\section*{Abstract}
+\tableofcontents
+\newpage
+
+
+\section{Introduction}
+
+
+
+\section{Literature Review}
+
+\subsection{Measuring Similarity}
+
+\subsubsection{Propensity Scoring}
+
+Rosenbaum and Rubin, 1983
+\begin{itemize}
+  \item The \emph{propensity score} is most often accredited to \ldots
+  \item They offer a more general definition of a score: anything affording conditional independence
+  \item Score seeks to replicated randomized trial
+  \item Review of properties (particularly: when can we make unbiased estimates of ATE)
+  \item Proposed use cases
+\end{itemize}
+
+Methods for calculating propensity scores: Garrido et al, 2014
+Note: Blocking-based balance metrics
+
+\paragraph{Extensions}
+\begin{itemize}
+  \item (Optimal) Caliper width: Austin 2011
+  \item Prognostic score: Hansen
+  \item Miettinen score is the root of the above
+  \item Joint use of Prognostic, Propensity, + Mahalanobis, Leacy and Stuart 2014
+  \item Imai and Van Dyk (make sure to include)
+\end{itemize}
+
+\subsubsection{(Coarsened) Exact Matching}
+
+\begin{itemize}
+  \item Iacus King Porro, 2011: MIB methods
+  \item Iacus King Porro, 2012: Causal inference without balance checking
+\end{itemize}
+
+\subsection{Balance Assessment}
+
+\subsection{Matching Algorithms}
+
+\section{Experiments}
+
+\subsection{Data Generation}
+
+Papers with data generation:
+\begin{itemize}
+  \item Austin 2011 (optimal caliper widths)
+  \item Stuart et al: 2018
+\end{itemize}
+
+\section{Results}
+
+\section{Discussion}
+
+\section{Conclusion}
+
+\end{document}
