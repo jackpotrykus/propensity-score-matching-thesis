@@ -29,8 +29,8 @@ def _get_preds_from_fittable(model: skt._Fittable, X: npt.ArrayLike) -> np.ndarr
     Returns
     -------
     np.ndarray
-        - if ``model`` is a :class:`_Classifier`, predicted probabilities, with the first column removed
-        - if ``model`` is a :class:`_Regressor`, predicted values
+        - if `model` is a :class:`_Classifier`, predicted probabilities, with the first column removed
+        - if `model` is a :class:`_Regressor`, predicted values
     """
     # TODO: Docstring
     if isinstance(model, skt._Classifier):
@@ -124,12 +124,12 @@ def autocoarsen(X: npt.ArrayLike, n_bins: npt.ArrayLike = 5) -> np.ndarray:
     X: ArrayLike
         input array to coarsen
     n_bins: ArrayLike
-        either a single ``int``, or an array of ``int``s, specifying number of bins for each column
+        either a single `int`, or an array of `int`s, specifying number of bins for each column
 
     Returns
     -------
     ndarray
-        of coarsened ``X``
+        of coarsened `X`
     """
     Xarr = pd.get_dummies(X).values
     if not not isinstance(n_bins, Iterable) or np.asarray(n_bins).shape[0] == Xarr.shape[1]:

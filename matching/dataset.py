@@ -8,12 +8,12 @@ import pandas as pd
 
 class _MatchingDatasetNDArrays(NamedTuple):
     """Container for the NDArray equivalent of each element of a :class:`MatchingDataset`.
-    Note that non-numeric columns of ``X`` are one-hot encoded.
+    Note that non-numeric columns of `X` are one-hot encoded.
 
     Attributes
     ----------
     X: ndarray
-        of features, with non-numeric columns one-hot encoded with ``drop_first=True``
+        of features, with non-numeric columns one-hot encoded with `drop_first=True`
     z: ndarray
         of boolean treatment assignments
     ids: ndarray
@@ -40,7 +40,7 @@ class MatchingDataset:
     z: Series
         of boolean treatment assignments
     ids: Series
-        of observation IDs. Note that these are coerced to ``str``
+        of observation IDs. Note that these are coerced to `str`
     """
 
     X: pd.DataFrame
@@ -58,11 +58,11 @@ class MatchingDataset:
         Parameters
         ----------
         X: ArrayLike
-            of features to match on. Will be converted to a ``pd.DataFrame``
+            of features to match on. Will be converted to a `pd.DataFrame`
         z: ArrayLike
-            of boolean treatment assignments. Will be converted to a ``pd.Series``
+            of boolean treatment assignments. Will be converted to a `pd.Series`
         ids: ArrayLike
-            of observation IDs. Will be converted to a ``pd.Series``, and coerced to type ``str``
+            of observation IDs. Will be converted to a `pd.Series`, and coerced to type `str`
         """
         self.X = pd.DataFrame(X).copy().reset_index(drop=True)
         self.z = pd.Series(np.asarray(z) == treatment_encoded_as, name="is_treatment").copy()
@@ -118,7 +118,7 @@ class MatchingDataset:
 
     @property
     def arrs(self) -> _MatchingDatasetNDArrays:
-        """Numpy array versions of ``X``, ``z``, and ``ids``. Non-numeric columns of ``X`` are one-hot encoded"""
+        """Numpy array versions of `X`, `z`, and `ids`. Non-numeric columns of `X` are one-hot encoded"""
         Xarr = pd.get_dummies(self.X, drop_first=True).values
         zarr = self.z.values.astype(bool)
         idsarr = self.ids.values.astype(str)
@@ -145,14 +145,14 @@ class MatchingDataset:
     def groupby(
         self: _MatchingDataset, by: Union[Hashable, Iterable[Hashable], npt.ArrayLike], *args, **kwargs
     ) -> Iterator[_MatchingDataset]:
-        """Works like ``pd.DataFrame.groupby``, except it yields :class:`_MatchingDataset` instead
+        """Works like `pd.DataFrame.groupby`, except it yields :class:`_MatchingDataset` instead
 
         Parameters
         ----------
         by: Union[Hashable, Iterable[Hashable], npt.ArrayLike]
-            A label, sequence of labels, or indexing array to supply to ``pd.DataFrame.groupby``
+            A label, sequence of labels, or indexing array to supply to `pd.DataFrame.groupby`
         *args, **kwargs
-            Passed to ``pd.DataFrame.groupby``
+            Passed to `pd.DataFrame.groupby`
 
         Yields
         -------
@@ -173,7 +173,7 @@ class MatchingDataset:
         Parameters
         ----------
         deep: bool
-            ``False`` by default. Whether or not to make a deep copy
+            `False` by default. Whether or not to make a deep copy
 
         Returns
         -------

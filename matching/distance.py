@@ -16,8 +16,8 @@ DEFAULT_DISTANCE_TOL = 1e-16
 
 
 class _WeightedEdgeInfo(NamedTuple):
-    """``NamedTuple`` representing weighted graph edges.
-    ``Iterable[WeightedEdgeInfo]`` can be passed to ``networkx.Graph.add_weighted_edges_from``
+    """`NamedTuple` representing weighted graph edges.
+    `Iterable[WeightedEdgeInfo]` can be passed to `networkx.Graph.add_weighted_edges_from`
 
     Attributes
     ----------
@@ -64,7 +64,7 @@ class _Distance(metaclass=ABCMeta):
     tol: float
         A small number to replace 0-weight edges (ie edges of perfect matches) with.
         This is so that the sparse matrix representation does not drop matches.
-        See ``DEFAULT_DISTANCE_TOL`` for details
+        See `DEFAULT_DISTANCE_TOL` for details
     """
 
     tol: float = field(default=DEFAULT_DISTANCE_TOL)
@@ -116,7 +116,7 @@ class Exact(_Distance):
 
 @dataclass
 class _Tuneable:
-    """A baseclass for distance metrics that can use ``min_distance`` and ``max_distance`` parameters to tune edge creation.
+    """A baseclass for distance metrics that can use `min_distance` and `max_distance` parameters to tune edge creation.
     Exists for MRO reasons with dataclasses, so that constuctor parameters take the desired order
 
     Attributes
@@ -133,7 +133,7 @@ class _Tuneable:
 
 @dataclass
 class _Norm:
-    """A baseclass for distance metrics norm-based distance metrics. ``p`` denotes which Lp Norm to use.
+    """A baseclass for distance metrics norm-based distance metrics. `p` denotes which Lp Norm to use.
     Exists for MRO reasons with dataclasses, so that constuctor parameters take the desired order
 
     Attributes
@@ -159,12 +159,12 @@ class Norm(_Distance, _Tuneable, _Norm):
         Maximum allowable edge weight. Can be used as a tuning parameter for identifying similar groups
     tol: float
         A small float. Edge weights of 0 (perfect matches) are replaced with this value, so that the sparse matrix
-        representation does not drop perfect matches (normally, 0 = no edge). Does not affect ``max_distance``.
-        See ``DEFAULT_DISTANCE_TOL`` for details
+        representation does not drop perfect matches (normally, 0 = no edge). Does not affect `max_distance`.
+        See `DEFAULT_DISTANCE_TOL` for details
     """
 
     def __post_init__(self) -> None:
-        # ``p`` should either be an ``int`` or ``float("inf")``; ``-3.4`` for instance is not valid
+        # `p` should either be an `int` or `float("inf")`; `-3.4` for instance is not valid
         if not isinstance(self.p, int):
             assert self.p == float("inf"), 'p must either be an `int` or `float("inf")`'
 
@@ -210,8 +210,8 @@ class L1Norm(Norm):
         Maximum allowable edge weight. Can be used as a tuning parameter for identifying similar groups
     tol: float
         A small float. Edge weights of 0 (perfect matches) are replaced with this value, so that the sparse matrix
-        representation does not drop perfect matches (normally, 0 = no edge). Does not affect ``max_distance``.
-        See ``DEFAULT_DISTANCE_TOL`` for details
+        representation does not drop perfect matches (normally, 0 = no edge). Does not affect `max_distance`.
+        See `DEFAULT_DISTANCE_TOL` for details
     """
 
     p: Union[int, float] = field(init=False, default=1)
@@ -231,8 +231,8 @@ class L2Norm(Norm):
         Maximum allowable edge weight. Can be used as a tuning parameter for identifying similar groups
     tol: float
         A small float. Edge weights of 0 (perfect matches) are replaced with this value, so that the sparse matrix
-        representation does not drop perfect matches (normally, 0 = no edge). Does not affect ``max_distance``.
-        See ``DEFAULT_DISTANCE_TOL`` for details
+        representation does not drop perfect matches (normally, 0 = no edge). Does not affect `max_distance`.
+        See `DEFAULT_DISTANCE_TOL` for details
     """
 
     p: Union[int, float] = field(init=False, default=2)
