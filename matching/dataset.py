@@ -5,6 +5,8 @@ from numpy import typing as npt
 import numpy as np
 import pandas as pd
 
+from matching import balance
+
 
 class _MatchingDatasetNDArrays(NamedTuple):
     """Container for the NDArray equivalent of each element of a :class:`MatchingDataset`.
@@ -188,11 +190,57 @@ class MatchingDataset:
         return type(self)(X, z, ids)
 
     def summary(self) -> pd.DataFrame:
-        """Print a summary of the matching :class:`_MatchingDataset`"""
-        return pd.concat(
-            [
-                self.frame.groupby(self.z.name).describe(include=np.number).T,
-                self.frame.groupby(self.z.name).describe(include=np.object_).T,
-            ],
-            axis=0,
-        )
+        """Print a summary of the matching :class:`_MatchingDataset`.
+
+        Metrics include:
+        - min, 25%, 50%, 75%, max;
+        - mean;
+        - standard deviation;
+        - standardized mean difference;
+        - variance ratio;
+        - eCDF of mean.
+
+        Returns
+        -------
+        pd.DataFrame
+            Note that this is multi-indexed by feature name, then metric (i.e. "min").
+            Columns represent treatment assignment
+        """
+
+        # NOTE: OLD BEHAVIOR
+        # numeric_summary = self.frame.groupby(self.z.name).describe(include=np.number).T
+        # discrete_summary = self.frame.groupby(self.z.name).describe(include=np.object_).T
+        # return pd.concat([numeric_summary, discrete_summary], axis=0)
+
+        dummified_df = pd.get_dummies(self.X, drop_first=True)
+        describe_df = dummified_df.groupby(self.z).describe().T
+        subdfs = []
+        for colname, subdf in describe_df.groupby(describe_df.index.get_level_values(0)):
+            # Get data from dummified data
+            tdata, cdata = dummified_df.loc[self.z, colname], dummified_df.loc[~self.z, colname]
+
+            # Get mean within each group
+            tmean, cmean = np.mean(tdata.values), np.mean(cdata.values)
+
+            # Fit eCDF within each group
+            tecdf, cecdf = balance.ecdf(tdata), balance.ecdf(cdata)
+
+            # Compute standardized mean differences, add to table
+            subdf.loc[(colname, "standardized_difference"), :] = [
+                balance.standardized_mean_difference(tdata, cdata),
+                balance.standardized_mean_difference(cdata, tdata),
+            ]
+
+            # Compute variance ratios, add to table
+            subdf.loc[(colname, "variance_ratio"), :] = [
+                balance.variance_ratio(tdata, cdata),
+                balance.variance_ratio(cdata, tdata),
+            ]
+
+            # Compute eCDF of means, add to table
+            subdf.loc[(colname, "ecdf_mean"), :] = [tecdf(tmean), cecdf(cmean)]
+
+            # Append modified subdf
+            subdfs.append(subdf)
+
+        return pd.concat(subdfs, axis=0)
