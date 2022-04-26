@@ -1,6 +1,5 @@
 \documentclass[11pt]{extarticle}
 
-
 \title{Assessing the Performance of Matching Methods in Observational Studies}
 \author{Jack Potrykus}
 \date{\today}
@@ -10,22 +9,35 @@
 \begin{document}
 
 
-\maketitle
+\maketitle{}
 
 \section*{Abstract}
-\tableofcontents
-\newpage
+\tableofcontents{}
+\newpage{}
 
 
 \section{Introduction}
+\label{sec:Introduction}
 
+In the context of observational data, a bipartite matching problem is minimally defined by:
+\begin{itemize}
+  \item \mat{X}, an $n \times p$ matrix of feature values;
+  \item \vec{z}, an $n$-vector of binary treatment assignments;
+  \item $d : \reals^p \times \reals^p \mapsto \reals^+$, a function which computes some ``distance'' or ``cost of matching'' between any two row vectors \vec{x_i} and \vec{x_j} of \mat{X}.
+\end{itemize}
+% The output 
+
+\set{S}, \vec{b}, \mat{A}, \vec{\upbeta}
+test \cite{iacus_multivariate_2011}
 
 
 \section{Literature Review}
 
 \subsection{Measuring Similarity}
+Iacus, King, Porro 2011 - set the scene
 
 \subsubsection{Propensity Scoring}
+
 
 Rosenbaum and Rubin, 1983
 \begin{itemize}
@@ -36,16 +48,16 @@ Rosenbaum and Rubin, 1983
   \item Proposed use cases
 \end{itemize}
 
-Methods for calculating propensity scores: Garrido et al, 2014
+Methods for calculating propensity scores: \cite{garrido_methods_2014}
 Note: Blocking-based balance metrics
 
 \paragraph{Extensions}
 \begin{itemize}
-  \item (Optimal) Caliper width: Austin 2011
-  \item Prognostic score: Hansen
-  \item Miettinen score is the root of the above
-  \item Joint use of Prognostic, Propensity, + Mahalanobis, Leacy and Stuart 2014
-  \item Imai and Van Dyk (make sure to include)
+  \item (Optimal) Caliper width: \cite{austin_optimal_2011}
+  \item Prognostic score: \cite{hansen_prognostic_2008}
+  \item Miettinen score is the root of the above \cite{miettinen_stratification_1976}
+  \item Joint use of Prognostic, Propensity, + Mahalanobis, \cite{leacy_joint_2014}
+  \item \cite{imai_causal_2004}
 \end{itemize}
 
 \subsubsection{(Coarsened) Exact Matching}
@@ -57,7 +69,18 @@ Note: Blocking-based balance metrics
 
 \subsection{Balance Assessment}
 
+Garrido et al, 2014: don't use the outcome in the matching
+Garrido et al, 2014: balance in mean does not imply balance in scores
+
 \subsection{Matching Algorithms}
+
+\parencite{rosenbaum_optimal_1989}
+\parencite{ho_matchit_2011} (Greedy)
+\parencite{khan_efficient_2016} (hungarian)
+\parencite{munkres_algorithms_1957} (hungarian)
+Hungarian -- Munkres, Khan et al 2016
+
+\section{Python Package}
 
 \section{Experiments}
 
@@ -65,8 +88,8 @@ Note: Blocking-based balance metrics
 
 Papers with data generation:
 \begin{itemize}
-  \item Austin 2011 (optimal caliper widths)
-  \item Stuart et al: 2018
+  \item \cite{austin_optimal_2011}
+  \item \cite{stuart_prognostic_2013}
 \end{itemize}
 
 \section{Results}
@@ -74,5 +97,14 @@ Papers with data generation:
 \section{Discussion}
 
 \section{Conclusion}
+
+
+% NOTE: SEE LINK BELOW
+% https://tex.stackexchange.com/questions/8458/making-the-bibliography-appear-in-the-table-of-contents
+% Special handling of bibliography awaits!!
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{section}{Bibliography}
+\printbibliography
 
 \end{document}

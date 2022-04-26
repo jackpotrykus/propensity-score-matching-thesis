@@ -6,21 +6,41 @@
 \usepackage{sansmath}
 \sansmath
 
+\usepackage{microtype}
 \usepackage{amsmath}
+\usepackage{breakcites}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{bbm}
 \usepackage{enumitem}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{fancyhdr}
-\usepackage[colorlinks]{hyperref}
+\usepackage{hyperref}
 \usepackage{parskip}
 \usepackage{listings}
 \usepackage{titling}
 \usepackage{graphicx}
 \usepackage[dvipsnames]{xcolor}
+\usepackage[style=authoryear]{biblatex}
+\usepackage{upgreek}
+\addbibresource{./bibs/Matching.bib}
 
 \newcommand*\ttvar[1]{\texttt{\expandafter\dottvar\detokenize{#1}\relax}}
 \newcommand*\dottvar[1]{\ifx\relax#1\else
   \expandafter\ifx\string_#1\string_\allowbreak\else#1\fi
   \expandafter\dottvar\fi}
+
+
+\hypersetup{
+    breaklinks=true,
+    colorlinks=true,
+    citecolor=magenta,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
 
 % Listings env preferences
 \lstset{
@@ -45,10 +65,6 @@
 \cfoot{\thepage}
 \lfoot{}
 \rfoot{}
-
-\newcommand{\pyfunction}[1]{{\color{BurntOrange}\ttvar{#1}}\defaultcolor}
-\newcommand{\pyvariable}[1]{{\color{RoyalPurple}\ttvar{#1}}\defaultcolor}
-\newcommand{\pyparameter}[1]{{\color{ForestGreen}\ttvar{#1}}\defaultcolor}
 
 % `answer` box: more customizable
 \usepackage{tcolorbox}
@@ -75,3 +91,9 @@
 }
 
 \allowdisplaybreaks
+
+
+\newcommand{\reals}{\ensuremath{\mathbbmss R}}
+\renewcommand{\vec}[1]{\ensuremath{\boldsymbol{\mathsfbf{#1}}}}
+\newcommand{\mat}[1]{\ensuremath{#1}}
+\newcommand{\set}[1]{\ensuremath{\mathcal{#1}}}
