@@ -21,9 +21,9 @@ def _get_preds_from_fittable(model: skt._Fittable, X: npt.ArrayLike) -> np.ndarr
 
     Parameters
     ----------
-    model: :class:`_Fittable`
+    model : :class:`_Fittable`
         Fitted object which we want to use to predict over `X`
-    X: ArrayLike
+    X : ArrayLike
         Of features to get predictions for
 
     Returns
@@ -49,13 +49,14 @@ def propensity_score(
 
     Parameters
     ----------
-    X: ArrayLike
+    X : ArrayLike
         of features to predict `y` with
+    z : ArrayLike
         of binary treatment assignments
-    model: Optional[:class:`_Fittable`]
+    model : Optional[:class:`_Fittable`]
         Model to use in prediction. Can be a regressor (for continuous `z`) or a classifier (for discrete `z`)
         By default, Logistic Regression with no penalty is used
-    use_logit: bool = False
+    use_logit : bool, default=False
         Whether or not to take the logit of the predicted values. Only pertinent when `model` is a classifier (and predicts probabilities)
 
     Returns
@@ -85,16 +86,16 @@ def prognostic_score(
 
     Parameters
     ----------
-    X: ArrayLike
+    X : ArrayLike
         of features to predict `y` with
-    y: ArrayLike
+    y : ArrayLike
         of outcomes
-    z: ArrayLike
+    z : ArrayLike
         of binary treatment assignments
-    model: Optional[_Fittable]
+    model : Optional[_Fittable]
         Model to use in prediction. Can be a regressor (for continuous response) or a classifier (for discrete response)
         By default, Logistic Regression with no penalty is used
-    use_logit: bool = False
+    use_logit : bool = False
         Whether or not to take the logit of the predicted values. Only pertinent when `model` is a classifier (and predicts probabilities)
 
     Returns
@@ -121,9 +122,9 @@ def autocoarsen(X: npt.ArrayLike, n_bins: npt.ArrayLike = 5) -> np.ndarray:
 
     Parameters
     ----------
-    X: ArrayLike
+    X : ArrayLike
         input array to coarsen
-    n_bins: ArrayLike
+    n_bins : ArrayLike
         either a single `int`, or an array of `int`s, specifying number of bins for each column
 
     Returns

@@ -9,10 +9,10 @@ def get_connected_subgraphs(G: nx.Graph, *, copy: bool = False, deep: bool = Fal
 
     Parameters
     ----------
-    copy: bool
-        Whether or not to make a copy of `G` before computing the subgraphs. `False` by default
-    deep: Optional[bool]
-        Whether or not to make a _deep_ copy of `G`. Only used if `copy == True`. `False` by default.
+    copy : bool, default=False
+        Whether or not to make a copy of `G` before computing the subgraphs
+    deep: Optional[bool], default=False
+        Whether or not to make a _deep_ copy of `G`. Only used if `copy == True`
     **kwargs
         Passed to `nx.Graph.copy()` if `copy=True` and `deep=False`
 

@@ -21,11 +21,11 @@ class _WeightedEdgeInfo(NamedTuple):
 
     Attributes
     ----------
-    tid: str
+    tid : str
         treatment ID (first node)
-    cid: str
+    cid : str
         control ID (second node)
-    weight: float
+    weight : float
         weight of the edge
     """
 
@@ -40,11 +40,11 @@ class _GraphUpdateInfo:
 
     Attributes
     ----------
-    tids: ArrayLike
+    tids : ArrayLike
         of treatment ID nodes to be included in the graph, for which `"bipartite" == 1`
-    cids: ArrayLike
+    cids : ArrayLike
         of control ID nodes to be included in the graph, for which `"bipartite" == 0`
-    edges: Iterable[:class:`WeightedEdgeInfo`]
+    edges : Iterable[:class:`WeightedEdgeInfo`]
         Iterable of <tid, cid, edge weight> tuples
     """
 
@@ -61,7 +61,7 @@ class _Distance(metaclass=ABCMeta):
 
     Attributes
     ----------
-    tol: float
+    tol : float, default=`DEFAULT_DISTANCE_TOL`
         A small number to replace 0-weight edges (ie edges of perfect matches) with.
         This is so that the sparse matrix representation does not drop matches.
         See `DEFAULT_DISTANCE_TOL` for details
@@ -93,7 +93,7 @@ class Exact(_Distance):
 
     Attributes
     ----------
-    tol: float
+    tol : float, default=`DEFAULT_DISTANCE_TOL`
         A small number to replace 0-weight edges (ie edges of perfect matches) with.
         This is so that the sparse matrix representation does not drop matches.
         See DEFAULT_DISTANCE_TOL for details
@@ -121,9 +121,9 @@ class _Tuneable:
 
     Attributes
     ----------
-    min_distance: float
+    min_distance : float, default=0
         Minimum allowable edge weight. Can be used as a tuning parameter for identifying similar groups
-    max_distance: float
+    max_distance : float, default=inf
         Maximum allowable edge weight. Can be used as a tuning parameter for identifying similar groups
     """
 
@@ -138,7 +138,7 @@ class _Norm:
 
     Attributes
     ----------
-    p: Union[int, float]
+    p : Union[int, float]
         Which LpNorm to use. Either an integer value, or infinity
     """
 
@@ -151,13 +151,13 @@ class Norm(_Distance, _Tuneable, _Norm):
 
     Attributes
     ----------
-    p: Union[int, float]
+    p : Union[int, float]
         Which LpNorm to use. Either an integer value, or infinity
-    min_distance: float
+    min_distance : float, default=0
         Minimum allowable edge weight. Can be used as a tuning parameter for identifying similar groups
-    max_distance: float
+    max_distance : float, default=inf
         Maximum allowable edge weight. Can be used as a tuning parameter for identifying similar groups
-    tol: float
+    tol : float, default=`DEFAULT_DISTANCE_TOL`
         A small float. Edge weights of 0 (perfect matches) are replaced with this value, so that the sparse matrix
         representation does not drop perfect matches (normally, 0 = no edge). Does not affect `max_distance`.
         See `DEFAULT_DISTANCE_TOL` for details
@@ -202,13 +202,13 @@ class L1Norm(Norm):
 
     Attributes
     ----------
-    p: Union[int, float]
-        Which Lp Norm to use. Either an integer value, or infinity. Fixed to 1 for :class:`L1Norm`
-    min_distance: float
+    p : Union[int, float], default=1
+        Which Lp Norm to use. Either an integer value, or infinity
+    min_distance : float, default=0
         Minimum allowable edge weight. Can be used as a tuning parameter for identifying similar groups
-    max_distance: float
+    max_distance : float, default=inf
         Maximum allowable edge weight. Can be used as a tuning parameter for identifying similar groups
-    tol: float
+    tol : float, default=`DEFAULT_DISTANCE_TOL`
         A small float. Edge weights of 0 (perfect matches) are replaced with this value, so that the sparse matrix
         representation does not drop perfect matches (normally, 0 = no edge). Does not affect `max_distance`.
         See `DEFAULT_DISTANCE_TOL` for details
@@ -223,13 +223,13 @@ class L2Norm(Norm):
 
     Attributes
     ----------
-    p: Union[int, float]
-        Which LpNorm to use. Either an integer value, or infinity. Fixed to 2 for :class:`L2Norm`
-    min_distance: float
+    p: Union[int, float], default=2
+        Which LpNorm to use
+    min_distance : float, default=0
         Minimum allowable edge weight. Can be used as a tuning parameter for identifying similar groups
-    max_distance: float
+    max_distance : float, default=inf
         Maximum allowable edge weight. Can be used as a tuning parameter for identifying similar groups
-    tol: float
+    tol : float, default=`DEFAULT_DISTANCE_TOL`
         A small float. Edge weights of 0 (perfect matches) are replaced with this value, so that the sparse matrix
         representation does not drop perfect matches (normally, 0 = no edge). Does not affect `max_distance`.
         See `DEFAULT_DISTANCE_TOL` for details

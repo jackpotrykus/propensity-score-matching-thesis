@@ -12,11 +12,11 @@ class _MatchingDatasetNDArrays(NamedTuple):
 
     Attributes
     ----------
-    X: ndarray
+    X : ndarray
         of features, with non-numeric columns one-hot encoded with `drop_first=True`
-    z: ndarray
+    z : ndarray
         of boolean treatment assignments
-    ids: ndarray
+    ids : ndarray
         of string IDs
     """
 
@@ -35,11 +35,11 @@ class MatchingDataset:
 
     Attributes
     ----------
-    X: DataFrame
+    X : DataFrame
         of features to match on
-    z: Series
+    z : Series
         of boolean treatment assignments
-    ids: Series
+    ids : Series
         of observation IDs. Note that these are coerced to `str`
     """
 
@@ -57,12 +57,14 @@ class MatchingDataset:
         """
         Parameters
         ----------
-        X: ArrayLike
+        X : ArrayLike
             of features to match on. Will be converted to a `pd.DataFrame`
-        z: ArrayLike
+        z : ArrayLike
             of boolean treatment assignments. Will be converted to a `pd.Series`
-        ids: ArrayLike
+        ids : ArrayLike, default=None
             of observation IDs. Will be converted to a `pd.Series`, and coerced to type `str`
+        treatment_encoded_as : Hashable, default=True
+            Value in `z` corresponding to treatment group membership.
         """
         self.X = pd.DataFrame(X).copy().reset_index(drop=True)
         self.z = pd.Series(np.asarray(z) == treatment_encoded_as, name="is_treatment").copy()
@@ -82,7 +84,7 @@ class MatchingDataset:
 
         Parameters
         ----------
-        __o: object
+        __o : object
             for comparison
 
         Returns
@@ -129,7 +131,7 @@ class MatchingDataset:
 
         Parameters
         ----------
-        indexer: ArrayLike
+        indexer : ArrayLike
             of boolean values, indicating which rows to keep
 
         Returns
@@ -149,7 +151,7 @@ class MatchingDataset:
 
         Parameters
         ----------
-        by: Union[Hashable, Iterable[Hashable], npt.ArrayLike]
+        by : Union[Hashable, Iterable[Hashable], npt.ArrayLike]
             A label, sequence of labels, or indexing array to supply to `pd.DataFrame.groupby`
         *args, **kwargs
             Passed to `pd.DataFrame.groupby`
@@ -172,7 +174,7 @@ class MatchingDataset:
 
         Parameters
         ----------
-        deep: bool
+        deep : bool
             `False` by default. Whether or not to make a deep copy
 
         Returns

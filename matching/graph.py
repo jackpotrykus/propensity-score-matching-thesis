@@ -24,17 +24,17 @@ class BipartiteGraphParameters:
 
     Attributes
     ----------
-    init_weight: float
+    init_weight : float
         The default weight between nodes in the naive graph, before `set_edges` is called
-    treatment_bipartite_attr: Hashable
+    treatment_bipartite_attr : Hashable
         What the "bipartite" attribute for will be set to for each treatment node in the graph
-    control_bipartite_attr: Hashable
+    control_bipartite_attr : Hashable
         What the "bipartite" attribute for will be set to for each control node in the graph
-    treatment_color: str
+    treatment_color : str
         Color to plot treatment nodes as
-    control_color: str
+    control_color : str
         Color to plot control nodes as
-    match_group_col: str
+    match_group_col : str
         Name of column to add to the graph data, indicating which match the observation belongs to
     """
 
@@ -87,21 +87,21 @@ class MatchingGraph:
 
     Attributes
     ----------
-    input_data: :class:`MatchingDataset`
-        The data which is supplied to the constructor (`X`, `z`, `ids`) is parsed into an `input_data` object, 
-        with attributes `X`, `z`, and `ids`. 
+    input_data : :class:`MatchingDataset`
+        The data which is supplied to the constructor (`X`, `z`, `ids`) is parsed into an `input_data` object,
+        with attributes `X`, `z`, and `ids`.
         You can convert this to a `pd.DataFrame` via `<MatchingGraphInst>.input_data.frame`
-    graph_data: :class:`MatchingDataset`
-        Just the data for the nodes currently present on the graph. Has all the same properties as `input_data`. 
+    graph_data : :class:`MatchingDataset`
+        Just the data for the nodes currently present on the graph. Has all the same properties as `input_data`.
         Note that this is a derived property that is re-calculated each time it is accessed.
-    match_data: :class:`MatchingDataset`
+    match_data : :class:`MatchingDataset`
         This is the same as `graph_data`, except it adds an additional column to `X`: "match_group", an integer
         indicating which matched subgraph the match belongs to
-    graph: nx.Graph
+    graph : nx.Graph
         Bipartite graph, where nodes represent observation IDs and edge weights correspond to the cost of matching
-    distance: :class:`_Distance`
+    distance : :class:`_Distance`
         The distance measure used to calculate the edge weights on the graph
-    _params: :class:`BipartiteGraphParameters`
+    _params : :class:`BipartiteGraphParameters`
         Private attribute that provides a single container for default arguments to pass to graph functions
     """
 
@@ -120,13 +120,13 @@ class MatchingGraph:
 
         Parameters
         ----------
-        X: ArrayLike
+        X : ArrayLike
             of features to match on. Will be converted to a `pd.DataFrame`
-        z: ArrayLike
+        z : ArrayLike
             of boolean treatment assignments. Will be converted to a `pd.Series`
-        ids: ArrayLike
+        ids : ArrayLike, default=None
             of observation IDs. Will be converted to a `pd.Series`, and coerced to type `str`
-        init_naive_graph: bool
+        init_naive_graph : bool, default=False
             Keywoard argument only. `False` by default; whether or not to initialize a "naive", fully-connected graph on init.
             This can be time-consuming. NOTE: if this is `False`, the user MUST call `set_edges` before doing any filtering!
             Otherwise the graph will remain empty
@@ -198,15 +198,15 @@ class MatchingGraph:
 
         Parameters
         ----------
-        include: Optional[Iterable[Hashable]]
+        include : Optional[Iterable[Hashable]]
             Features to __include__ in the distance calculation, `None` by default.
             When `None`, all features from `self.input_data.X` are included.
             When `Hashable` or `Iterable[Hashable]`, distance only uses corresponding columns of `self.input_data.X`
-        exclude: Optional[Iterable[Hashable]]
+        exclude : Optional[Iterable[Hashable]]
             Features to __exclude__ in the distance calculation, `None` by default.
             When `None`, no features from `self.input_data.X` are excluded.
             When `Hashable` or `Iterable[Hashable]`, distance drops corresponding columns of `self.input_data.X`
-        use_graph_data: bool
+        use_graph_data : bool
             Whether or not to use the graph data as opposed to the input data
 
         Returns
@@ -247,19 +247,19 @@ class MatchingGraph:
 
         Parameters
         ----------
-        distance: :class:`_Distance`
+        distance : :class:`_Distance`
             Distance measure to use
-        include: Optional[Iterable[Hashable]]
+        include : Optional[Iterable[Hashable]]
             Features to __include__ in the distance calculation, `None` by default.
             When `None`, all features from `self.input_data.X` are included.
             When `Hashable` or `Iterable[Hashable]`, distance only uses corresponding columns of `self.input_data.X`
-        exclude: Optional[Iterable[Hashable]]
+        exclude : Optional[Iterable[Hashable]]
             Features to __exclude__ in the distance calculation, `None` by default.
             When `None`, no features from `self.input_data.X` are excluded.
             When `Hashable` or `Iterable[Hashable]`, distance drops corresponding columns of `self.input_data.X`
-        allow_new_node: bool
+        allow_new_node : bool
             Whether to allow new nodes to be added to the graph, `True` by default.
-        allow_new_edge: bool
+        allow_new_edge : bool
             Whether to allow new edges to be added to the graph, `True` by default.
 
         Returns
@@ -304,13 +304,13 @@ class MatchingGraph:
 
         Parameters
         ----------
-        distance: _Distance
+        distance : _Distance
             Distance measure to use
-        include: Optional[Iterable[Hashable]]
+        include : Optional[Iterable[Hashable]]
             Features to __include__ in the distance calculation, `None` by default.
             When `None`, all features from `self.input_data.X` are included.
             When `Hashable` or `Iterable[Hashable]`, distance only uses corresponding columns of `self.input_data.X`
-        exclude: Optional[Iterable[Hashable]]
+        exclude : Optional[Iterable[Hashable]]
             Features to __exclude__ in the distance calculation, `None` by default.
             When `None`, no features from `self.input_data.X` are excluded.
             When `Hashable` or `Iterable[Hashable]`, distance drops corresponding columns of `self.input_data.X`
@@ -352,13 +352,13 @@ class MatchingGraph:
 
         Parameters
         ----------
-        min_degree: int
+        min_degree : int
             0 by default. Only keep nodes of degree (# of connected edges) at least this quantity
-        max_degree: Union[int, float]
+        max_degree : Union[int, float]
             `np.inf` by default. Only keep nodes of degree (# of connected edges) at most this quantity
-        keep_nodes: Optional[Iterable[str]]
+        keep_nodes : Optional[Iterable[str]]
             If supplied, a set of node labels to keep; all other nodes are dropped. `None` by default
-        drop_nodes: Optional[Iterable[str]]
+        drop_nodes : Optional[Iterable[str]]
             If supplied, a set of node labels to drop; all other nodes are kept. `None` by default
 
         Returns
@@ -387,13 +387,13 @@ class MatchingGraph:
     def filter_subgraphs(
         self,
         *,
-        min_order: int = 2,
+        min_order: int = 0,
         max_order: Union[int, float] = np.inf,
-        min_size: int = 1,
+        min_size: int = 0,
         max_size: Union[int, float] = np.inf,
-        min_treatment: int = 1,
+        min_treatment: int = 0,
         max_treatment: Union[int, float] = np.inf,
-        min_control: int = 1,
+        min_control: int = 0,
         max_control: Union[int, float] = np.inf,
         max_control_to_treatment_ratio: float = np.inf,
         max_treatment_to_control_ratio: float = np.inf,
@@ -410,25 +410,25 @@ class MatchingGraph:
 
         Parameters
         ----------
-        min_order: int
+        min_order : int, default=0
             Minimum number of nodes in the subgraph for the matches to be included. Default is 2
-        max_order: int
+        max_order : int, default=inf
             Maximum number of nodes in the subgraph for the matches to be included. Default is `np.inf`
-        min_size: int
+        min_size : int, default=0
             Minimum number of edges in the subgraph for the matches to be included. Default is 1
-        max_size: int
+        max_size : int, default=inf
             Maximum number of edges in the subgraph for the matches to be included. Default is `np.inf`
-        min_treatment: int
+        min_treatment : int, default=0
             Minimum number of treatment nodes in the subgraph for the matches to be included. Default is 1
-        max_treatment: Union[int, float]
+        max_treatment : Union[int, float], default=inf
             Maximum number of treatment nodes in the subgraph for the matches to be included. Default is `np.inf`
-        min_control: int
+        min_control : int, default=0
             Minimum number of control nodes in the subgraph for the matches to be included. Default is 1
-        max_control: Union[int, float]
+        max_control : Union[int, float], default=inf
             Maximum number of control nodes in the subgraph for the matches to be included. Default is `np.inf`
-        max_control_to_treatment_ratio: float
+        max_control_to_treatment_ratio : float, default=inf
             Maximum ratio of control: treatment within a subgraph for the matches to be included. Default is `np.inf`
-        max_treatment_to_control_ratio: float
+        max_treatment_to_control_ratio : float, default=inf
             Maximum ratio of treatment: control within a subgraph for the matches to be included. Default is `np.inf`
 
         Returns
@@ -436,11 +436,6 @@ class MatchingGraph:
         :class:`_MatchingGraph`
             same instance. This allows method chaining. The fitted filtered is available in `self.graph`
         """
-        assert min_order >= 2, "min_order must be greater than 2"
-        assert min_size >= 1, "min_size must be greater than 1"
-        assert max_order >= min_order, f"{max_order=} is less than {min_order=}"
-        assert max_size >= min_size, f"{max_size=} is less than {min_size=}"
-
         keep_nodes = set()
         subgraphs = gu.get_connected_subgraphs(self.graph)
         for H in subgraphs:
@@ -480,7 +475,7 @@ class MatchingGraph:
 
         Parameters
         ----------
-        match_dict: Dict[str, List[str]]
+        match_dict : Dict[str, List[str]]
             Dictionary of <tid>, <one or more cids> matches
 
         Returns
@@ -519,16 +514,16 @@ class MatchingGraph:
 
         Parameters
         ----------
-        n_match: int
+        n_match : int, default=1
             Maximum number of matches per treatment group observation. 1 by default
-        min_match: int
+        min_match : int, default=1
             Minimum number of matches per treatment group observation. Patients with less than this amount of matches
             are dropped from the result
-        replace: bool = False
+        replace : bool, default=False
             Whether or not to conduct matching with replacement. If `True`, then two treatment group observations can
             match with the same control group observation. `False` by default
-        method: Union[str, MatchingMethod]
-            Matching method to use; "greedy" by default. Valid options are (case-insensitive):
+        method : Union[str, MatchingMethod], default="greedy"
+            Matching method to use. Valid options are (case-insensitive):
             - "greedy" == "fast"
             - "optimal" == "hungarian" == "kuhn" == "munkres"
 
@@ -557,12 +552,12 @@ class MatchingGraph:
 
         Parameters
         ----------
-        n_match: int
+        n_match : int
             Maximum number of matches per treatment group observation. 1 by default
-        min_match: int
+        min_match : int
             Minimum number of matches per treatment group observation. Patients with less than this amount of matches
             are dropped from the result
-        replace: bool = False
+        replace : bool = False
             Whether or not to conduct matching with replacement. If `True`, then two treatment group observations can
             match with the same control group observation. `False` by default
 
@@ -678,12 +673,12 @@ class MatchingGraph:
 
         Parameters
         ----------
-        n_match: int
+        n_match : int
             Maximum number of matches per treatment group observation. 1 by default
-        min_match: int
+        min_match : int
             Minimum number of matches per treatment group observation. Patients with less than this amount of matches
             are dropped from the result
-        replace: bool = False
+        replace : bool, default=False
             Whether or not to conduct matching with replacement. If `True`, then two treatment group observations can
             match with the same control group observation. `False` by default
 
@@ -724,7 +719,7 @@ class MatchingGraph:
 
         Parameters
         ----------
-        with_labels: bool
+        with_labels : bool, default=False
             Whether to draw the `ids` on the graph
         *args, **kwargs
             Passed to `networkx.draw_networkx`
@@ -741,7 +736,7 @@ class MatchingGraph:
 
         Parameters
         ----------
-        with_labels: bool
+        with_labels : bool, default=False
             Whether to draw the `ids` on the graph
         *args, **kwargs
             Passed to `networkx.draw_networkx`
