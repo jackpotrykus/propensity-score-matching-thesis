@@ -1,0 +1,30 @@
+classDiagram
+    class _WeightedEdgeInfo
+    _WeightedEdgeInfo : +str tid
+    _WeightedEdgeInfo : +str cid
+    _WeightedEdgeInfo : +float weight
+
+    class _GraphUpdateInfo
+    _GraphUpdateInfo : +ArrayLike tids
+    _GraphUpdateInfo : +ArrayLike cids
+    _GraphUpdateInfo : +Iterable[_WeightedEdgeInfo]
+
+    class _Distance
+    _Distance : +float tol
+    _Distance : +_compute(MatchingDataset data) _GraphUpdateInfo
+    _Distance <|-- Exact
+
+    class _Tuneable
+    _Tuneable : +float min_distance
+    _Tuneable : +float max_distance
+
+    class _Norm
+    _Norm : +Union[int, float] p
+
+    class Norm
+    _Distance <|-- Norm
+    _Tuneable <|-- Norm
+    _Norm <|-- Norm
+
+    Norm <|-- L1Norm
+    Norm <|-- L2Norm

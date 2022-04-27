@@ -1,0 +1,13 @@
+flowchart TD
+    X --> M[matching.graph.MatchingGraph]
+    Z --> M
+    I[ids: ArrayLike] --> |Optional| M
+    X[X: ArrayLike] --> |Optional| P(matching.preprocessing)
+    P --> M
+    Z[Z: ArrayLike] --> |Optional| P
+    M --> S[mg.set_edges]
+    D[matching.distance] --> S
+    S --> |Optional| F[M.filter_edges, M.filter_nodes, M.filter_subgraphs]
+    D --> F
+    S --> G[mg.match]
+    F --> G
