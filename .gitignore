@@ -1,7 +1,7 @@
 # BEGIN CUSTOM GITIGNORE {{{
 
 tags                 # tags file
-*.DS_Store           # OSX headaches
+**/*.DS_Store        # OSX headaches
 *.vscode             # Just use vim
 *.idea               # Just use vim
 *.pyrightconfig.json # Pyright config
