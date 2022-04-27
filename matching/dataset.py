@@ -214,7 +214,7 @@ class MatchingDataset:
 
         dummified_df = pd.get_dummies(self.X, drop_first=True)
         describe_df = dummified_df.groupby(self.z).describe().T
-        subdfs = []
+        subdescribe_dfs = []
         for colname, subdf in describe_df.groupby(describe_df.index.get_level_values(0)):
             # Get data from dummified data
             tdata, cdata = dummified_df.loc[self.z, colname], dummified_df.loc[~self.z, colname]
@@ -241,6 +241,7 @@ class MatchingDataset:
             subdf.loc[(colname, "ecdf_mean"), :] = [tecdf(tmean), cecdf(cmean)]
 
             # Append modified subdf
-            subdfs.append(subdf)
+            subdescribe_dfs.append(subdf)
 
-        return pd.concat(subdfs, axis=0)
+        # Concatenate dfs on top of each other
+        return pd.concat(subdescribe_dfs, axis=0)
