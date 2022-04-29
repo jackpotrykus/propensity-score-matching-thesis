@@ -25,8 +25,8 @@ sys.path.insert(0, str(REPOSITORY_ROOT))
 # -- Project information -----------------------------------------------------
 
 project = "matching"
-copyright = "2022, Author"
-author = "Author"
+copyright = "2022, Jack Potrykus"
+author = "Jack Potrykus"
 
 
 # -- General configuration ---------------------------------------------------

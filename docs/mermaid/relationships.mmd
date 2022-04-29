@@ -1,0 +1,8 @@
+graph
+    UI["X, z: ArrayLike"] --> |as input| MG[matching.graph.MatchingGraph]
+    UI --> |is converted by MatchingGraph to| MD
+    MD[matching.dataset.MatchingDataset] --> |is managed by| MG
+    PP[matching.preprocessing] --> |"(optionally) preprocesses"| UI
+    DB[matching.distance] --> |used to set and filter edges of| MG
+    MG --> OD[Output: input_data, match_data]
+    MB[matching.balance] --> |assesses balance improvement between| OD
