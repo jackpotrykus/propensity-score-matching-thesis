@@ -5,7 +5,9 @@ from numpy import typing as npt
 def standardized_mean_difference(a: npt.ArrayLike, b: npt.ArrayLike):
     """Computes the standardized mean difference between a and b.
 
-    .. math:: \frac{\overline{a} - \overline{b}}{\sqrt{\text{Var}(a) + \text{Var}(b)}}
+    .. math::
+
+        \\frac{\\overline{a} - \\overline{b}}{\\sqrt{\\text{Var}(a) + \\text{Var}(b)}}
 
     Parameters
     ----------
@@ -58,7 +60,10 @@ def ecdf(x: npt.ArrayLike):
 
 def variance_ratio(a: npt.ArrayLike, b: npt.ArrayLike) -> float:
     """Compute the variance ratio between `a` and `b`, defined as
-    .. math:: \frac{\text{Var}(a)}{\text{Var}(b)}
+
+    .. math:: 
+
+        \\frac{\\text{Var}(a)}{\\text{Var}(b)}
 
     Parameters
     ----------

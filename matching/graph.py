@@ -60,12 +60,14 @@ _MatchingGraph = TypeVar("_MatchingGraph", bound="MatchingGraph")
 @dataclass(init=False)
 class MatchingGraph:
     """:class:`MatchingGraph` offers a simple framework to
+
     - calculate a distance metric between two sides of a bipartite graph,
     - iteratively filter this graph by enforcing other constraints on nodes and edges,
     - calculate a "matched" subset of this graph via greedy, grouping, or optimal matching strategies, and
     - compare the balance between input and matched datasets.
 
     At construction, the user supplies three `ArrayLike`s:
+
     - `X`, an array of features to match on;
     - `z`, an array of binary treatment assignments; and
     - `ids`, an optional array of observation IDs. If not supplied, default IDs are enumerated from 0 upwards.
@@ -77,6 +79,7 @@ class MatchingGraph:
     Once the edges are calculated, the user can then use one of the matching strategies provided to "match" their
     dataset. Alternatively, the user can proceed to iteratively filter the graph further, via the `filter_edges` and
     `filter_nodes`.
+
     - `filter_edges` allows the user to enforce additional distance metrics on the data, while preserving the edge
     weights from `set_edges`. For example, a user may calculate edge weights on a propensity score, but then require
     an exact match on certain categorical features, as well as a cutoff for the Mahalanobis distance between the feature
@@ -524,6 +527,7 @@ class MatchingGraph:
             match with the same control group observation. `False` by default
         method : Union[str, MatchingMethod], default="greedy"
             Matching method to use. Valid options are (case-insensitive):
+
             - "greedy" == "fast"
             - "optimal" == "hungarian" == "kuhn" == "munkres"
 

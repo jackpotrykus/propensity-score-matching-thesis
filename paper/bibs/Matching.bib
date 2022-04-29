@@ -3,7 +3,7 @@
 	title = {Bias Reduction in Observational Studies via Prognosis Scores},
 	abstract = {The propensity score collapses the covariates of an observational study into a single measure summarizing their joint association with treatment conditions. The prognosis score — a complement or alternative to the propensity score —summarizes covariates’ association with potential responses. As with propensity scores, stratiﬁcation on the prognosis score brings to uncontrolled studies a concrete and desirable form of balance, a balance that is more familiar as an objective of experimental control. In parallel with the propensity score, prognosis scores reduce the dimension of the covariate; yet causal inferences conditional on them are as valid as are inferences conditional only on the unreduced covariate. They suggest themselves in certain studies for which propensity score adjustment is infeasible. Other settings call for a combination of prognosis and propensity scores; as compared to propensity scores alone, the pairing reduces both the variance and bias of estimated treatment eﬀects. An example and a simulation study conﬁrm that the combination of the two better reduces bias, and is much more eﬃcient, than propensity scoring alone.},
 	pages = {29},
-	author = {Hansen, Ben B and Hall, West and Arbor, Ann},
+	author = {Hansen, Ben B},
 	date = {2006},
 	langid = {english},
 	file = {Hansen et al. - Bias Reduction in Observational Studies via Progno.pdf:/Users/jackpotrykus/Zotero/storage/EI7KFD2E/Hansen et al. - Bias Reduction in Observational Studies via Progno.pdf:application/pdf},
@@ -583,7 +583,8 @@
 	journaltitle = {Journal of the American Statistical Association},
 	author = {Imai, Kosuke and van Dyk, David A},
 	date = {2004-09-01},
-	note = {Publisher: Taylor \& Francis \_eprint: https://doi.org/10.1198/016214504000001187},
+	note = {Publisher: Taylor \& Francis
+\_eprint: https://doi.org/10.1198/016214504000001187},
 	keywords = {Nonrandom treatment assignment, Subclassification, Medical expenditure, Observational studies, Return to schooling, Treatment effect},
 	file = {Imai and van Dyk - 2004 - Causal Inference With General Treatment Regimes.pdf:/Users/jackpotrykus/Zotero/storage/RRKGEKLF/Imai and van Dyk - 2004 - Causal Inference With General Treatment Regimes.pdf:application/pdf},
 }
@@ -757,4 +758,62 @@
 	author = {Zhao, Zhong},
 	date = {2004-02-01},
 	file = {Snapshot:/Users/jackpotrykus/Zotero/storage/HLVXQ79X/Using-Matching-to-Estimate-Treatment-Effects-Data.html:text/html},
+}
+
+@article{gupta_dame-flame_2021,
+	title = {dame-flame: A Python Library Providing Fast Interpretable Matching for Causal Inference},
+	url = {http://arxiv.org/abs/2101.01867},
+	shorttitle = {dame-flame},
+	abstract = {dame-flame is a Python package for performing matching for observational causal inference on datasets containing discrete covariates. This package implements the Dynamic Almost Matching Exactly ({DAME}) and Fast Large-Scale Almost Matching Exactly ({FLAME}) algorithms, which match treatment and control units on subsets of the covariates. The resulting matched groups are interpretable, because the matches are made on covariates (rather than, for instance, propensity scores), and high-quality, because machine learning is used to determine which covariates are important to match on. {DAME} solves an optimization problem that matches units on as many covariates as possible, prioritizing matches on important covariates. {FLAME} approximates the solution found by {DAME} via a much faster backward feature selection procedure. The package provides several adjustable parameters to adapt the algorithms to specific applications, and can calculate treatment effects after matching. Descriptions of these parameters, details on estimating treatment effects, and further examples, can be found in the documentation at https://almost-matching-exactly.github.io/{DAME}-{FLAME}-Python-Package/},
+	journaltitle = {{arXiv}:2101.01867 [cs]},
+	author = {Gupta, Neha R. and Orlandi, Vittorio and Chang, Chia-Rui and Wang, Tianyu and Morucci, Marco and Dey, Pritam and Howell, Thomas J. and Sun, Xian and Ghosal, Angikar and Roy, Sudeepa and Rudin, Cynthia and Volfovsky, Alexander},
+	date = {2021-01-14},
+	eprinttype = {arxiv},
+	eprint = {2101.01867},
+	keywords = {Computer Science - Machine Learning, Computer Science - Mathematical Software},
+	file = {arXiv Fulltext PDF:/Users/jackpotrykus/Zotero/storage/LSYMYCGU/Gupta et al. - 2021 - dame-flame A Python Library Providing Fast Interp.pdf:application/pdf;arXiv.org Snapshot:/Users/jackpotrykus/Zotero/storage/ULPQP8FQ/2101.html:text/html},
+}
+
+@software{miroglio_pymatch_2022,
+	title = {pymatch},
+	rights = {{MIT}},
+	url = {https://github.com/benmiroglio/pymatch},
+	author = {Miroglio, Ben},
+	date = {2022-04-22},
+	note = {original-date: 2017-09-20T20:57:05Z},
+}
+
+
+@article{liu_interpretable_2019,
+	title = {Interpretable Almost Matching Exactly for Causal Inference},
+	url = {http://arxiv.org/abs/1806.06802},
+	abstract = {We aim to create the highest possible quality of treatment-control matches for categorical data in the potential outcomes framework. Matching methods are heavily used in the social sciences due to their interpretability, but most matching methods do not pass basic sanity checks: they fail when irrelevant variables are introduced, and tend to be either computationally slow or produce low-quality matches. The method proposed in this work aims to match units on a weighted Hamming distance, taking into account the relative importance of the covariates; the algorithm aims to match units on as many relevant variables as possible. To do this, the algorithm creates a hierarchy of covariate combinations on which to match (similar to downward closure), in the process solving an optimization problem for each unit in order to construct the optimal matches. The algorithm uses a single dynamic program to solve all of the optimization problems simultaneously. Notable advantages of our method over existing matching procedures are its high-quality matches, versatility in handling different data distributions that may have irrelevant variables, and ability to handle missing data by matching on as many available covariates as possible.},
+	journaltitle = {{arXiv}:1806.06802 [cs, stat]},
+	author = {Liu, Yameng and Dieng, Aw and Roy, Sudeepa and Rudin, Cynthia and Volfovsky, Alexander},
+	date = {2019-06-08},
+	eprinttype = {arxiv},
+	eprint = {1806.06802},
+	keywords = {Computer Science - Machine Learning, Statistics - Machine Learning, Statistics - Methodology},
+	file = {arXiv Fulltext PDF:/Users/jackpotrykus/Zotero/storage/C28CUA53/Liu et al. - 2019 - Interpretable Almost Matching Exactly for Causal I.pdf:application/pdf;arXiv.org Snapshot:/Users/jackpotrykus/Zotero/storage/XYSR7NUT/1806.html:text/html},
+}
+
+@article{wang_flame_2021,
+	title = {{FLAME}: A Fast Large-scale Almost Matching Exactly Approach to Causal Inference},
+	url = {http://arxiv.org/abs/1707.06315},
+	shorttitle = {{FLAME}},
+	abstract = {A classical problem in causal inference is that of matching, where treatment units need to be matched to control units based on covariate information. In this work, we propose a method that computes high quality almost-exact matches for high-dimensional categorical datasets. This method, called {FLAME} (Fast Large-scale Almost Matching Exactly), learns a distance metric for matching using a hold-out training data set. In order to perform matching efficiently for large datasets, {FLAME} leverages techniques that are natural for query processing in the area of database management, and two implementations of {FLAME} are provided: the first uses {SQL} queries and the second uses bit-vector techniques. The algorithm starts by constructing matches of the highest quality (exact matches on all covariates), and successively eliminates variables in order to match exactly on as many variables as possible, while still maintaining interpretable high-quality matches and balance between treatment and control groups. We leverage these high quality matches to estimate conditional average treatment effects ({CATEs}). Our experiments show that {FLAME} scales to huge datasets with millions of observations where existing state-of-the-art methods fail, and that it achieves significantly better performance than other matching methods.},
+	journaltitle = {{arXiv}:1707.06315 [cs, stat]},
+	author = {Wang, Tianyu and Morucci, Marco and Awan, M. Usaid and Liu, Yameng and Roy, Sudeepa and Rudin, Cynthia and Volfovsky, Alexander},
+	date = {2021-02-04},
+	eprinttype = {arxiv},
+	eprint = {1707.06315},
+	keywords = {Computer Science - Databases, Statistics - Machine Learning},
+	file = {arXiv Fulltext PDF:/Users/jackpotrykus/Zotero/storage/NX2GUUZZ/Wang et al. - 2021 - FLAME A Fast Large-scale Almost Matching Exactly .pdf:application/pdf;arXiv.org Snapshot:/Users/jackpotrykus/Zotero/storage/LGTENMZH/1707.html:text/html},
+}
+
+@article{dowhypaper,
+	title = {DoWhy: An End-to-End Library for Causal Inference},
+	author = {Sharma, Amit and Kiciman, Emre},
+	journal = {arXiv preprint arXiv:2011.04216},
+	year = {2020}
 }
