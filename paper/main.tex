@@ -88,7 +88,7 @@ By preprocessing $\mat{X}$ to a single dimension of scores $b(\mat{X})$, we not 
 \begin{equation}
   \mat{X} \perp \vec{y} | b(\mat{X}) \iff b \text{ is a prognostic balancing score} \label{eqn:prognosticscoredef}
 \end{equation}
-The pgognostic score is constructed nearly in exactly the same way as the propensity score; however, in order to preserve~\eqref{eqn:prognosticscoredef}, the model (linear/logistic regression, random forest, etc.) is trained on the \emph{control data alone}. This model is then used to predict scores over the \emph{whole dataset}.
+The prognostic score is constructed nearly in exactly the same way as the propensity score; however, in order to preserve~\eqref{eqn:prognosticscoredef}, the model (linear/logistic regression, random forest, etc.) is trained on the \emph{control data alone}. This model is then used to predict scores over the \emph{whole dataset}.
 
 The idea of using outcomes, either raw or ``preprocessed'', does not see unanimous support; \textcite{garrido_methods_2014} argues against incorporating any information about outcome into the matching process. \textcite{miettinen_stratification_1976} was a seminal paper in matching that used outcome stratification; this method has since been found to be suboptimal, and has been effectively replaced by prognostic scores and other methods \parencite{hansen_bias_2006} (Miettinen's ``multivariate confounder score'' used the \emph{full} dataset, not just the control, when fitting). \textcite{hansen_bias_2006} argues for its inclusion via a ``conditionality principle'', which suggests that if some statistic (in this case, $b(\mat{X})$) is known to be uninformative about the parameter being estimated (i.e. treatment effects), it should be included in inferential models.
 
@@ -106,7 +106,7 @@ This comes with a cost: if the caliper is sufficiently small, observations with 
 Whereas each study design balances unobserved confounding features on average, fully blocked methods assure balance of observed confounding features, whereas complete randomization only promises balance \emph{on average}.
 They thus regard balancing score methods as having a ``lower standard''.
 Second, they observe the ``paradox of Propensity Score Matching'': consider the case where $\mat{X} \perp \vec{z}$, and so all predicted scores are the same constant: $\hat{\vec{z}}$.
-Then, all potential matches are indecipherable, and the individual matchings may be complete nonsensical.
+Then, all potential matches are indecipherable, and the individual matchings may be complete nonsensical. The authors nonetheless concede that propensity scores (and other balancing scores, by extension) do indeed have nice theoretical properties, and may serve as a useful diagnostic; they contend only that they should not be used for matching.
 
 TODO VERIFY
 
@@ -121,11 +121,11 @@ where $w_i$ denotes the observation weight for observation $i$, $m_T$ and $m_C$ 
 
 \textcite{iacus_multivariate_2011} introduces a formal definition for a class of distance measures which they call ``monotonic imbalance bounding'', or MIB. These methods are designed to require no assumptions about the distribution of the data, and to emphasize minimizing \emph{in-sample} imbalance, as opposed to \emph{sample} balance. These methods take a vector of tuning parameters $\vec{\uppi}$, such as a vector of calipers. These methods afford the benefit that the number of matches is a function of the tuning parameters alone, and given monotonicity of the maximum distance function $\gamma_{D_{d}}(\vec{\uppi})$, can be each adjusted independently other others: if $\gamma$ is vector-valued, returning a vector in $\reals^k$, the distance between each feature vector can be independently compared in a sequence of inequalities. CEM is an example of an MIB distance measure, but this class is clearly much more flexible, allowing for precise adjustments.
 
-\paragraph{Almost Exact matching.} Some of the most modern methods are DAME \parencite{liu_interpretable_2019} and FLAME \cite{wang_flame_2021}, which incorporate machine-learning generated weight vectors indicating the relative importance of features to extend exact matching into the field of \emph{almost exact matching}. These two algorithms are unified by their tendency to sometimes ``drop'' uninformative features from the matching process, in order to ensure that the most important features are matched on, and potentially increase the number of potential matches.
+\paragraph{Almost Exact Matching.} Some of the most modern methods are DAME \parencite{liu_interpretable_2019} and FLAME \cite{wang_flame_2021}, which incorporate machine-learning generated weight vectors indicating the relative importance of features to extend exact matching into the field of \emph{almost exact matching}. These two algorithms are unified by their tendency to sometimes ``drop'' uninformative features from the matching process, in order to ensure that the most important features are matched on, and potentially increase the number of potential matches.
 
 TODO FINISH
 
-\subsubsection{Norms and Mahalanobis Distance}
+\subsubsection{$L^p$ Norms and Mahalanobis Distance}
 \label{subsubsec:normdist}
 
 Norms of the difference between feature vectors (i.e. $\| \vec{x}_T - \vec{x}_C \|_p$) themselves are usually used in the form of Mahalanobis distance, which first rescales all features to have mean zero and unit variance, and then calculates distances using the $L^2$ norm.
@@ -141,19 +141,25 @@ Nonetheless, \textcite{leacy_joint_2014} finds Mahalanobis distance to perform w
 Once the distance measure has been agreed upon, the researcher must then decide \emph{how} to match. A computer scientist could describe this problem as finding the minimum weight full matching of a \emph{bipartite graph}, whose nodes represent observation IDs, and whose edge weights represent the distance between them. Here, the term ``bipartite'' means that all edges in the graph map $T \leftrightarrow C$; within each disjoint subset, no two nodes share an edge. This paper will explore the optimal solution to this problem in both the $1:1$ and $1:k$ matching scenarios, as well as fast approximations.
 
 
-\paragraph{Optimal Matching.} \textcite{rosenbaum_optimal_1989} argues for optimal matching according to the Hungarian algorithm, also known as the Kuhn-Munkres or simply Munkres algorithm \parencite{munkres_algorithms_1957}. We will denote a matching a set $\set{M}$ of tuples $(i, j)$, with $i$ representing a treatment-group observation ID, and $j$ a control-group observation ID. The Hungarian algorithm solves the \emph{linear assignment problem},which in this setting may be expressed as
+\subsubsection{Optimal Matching}
+
+\textcite{rosenbaum_optimal_1989} argues for optimal matching according to the Hungarian algorithm, also known as the Kuhn-Munkres or simply Munkres algorithm \parencite{munkres_algorithms_1957}. We will denote a matching a set $\set{M}$ of tuples $(i, j)$, with $i$ representing a treatment-group observation ID, and $j$ a control-group observation ID. The Hungarian algorithm solves the \emph{linear assignment problem},which in this setting may be expressed as
 \begin{equation}
-  \min_{\set{M}} \sum_{i, j \in \set{M}} d(\vec{x}_i, \vec{x}_j), \text{ such that } \forall (i, j), (k, l) \in \set{M}, i = k \iff j = k;
+  \min_{\set{M}} \sum_{(i, j) \in \set{M}} d(\vec{x}_{T_{i}}, \vec{x}_{C_{j}}), \text{ such that } \forall (i, j), (k, l) \in \set{M}, i = k \iff j = l;
 \end{equation}
-the ``such that'' condition simply specifies that the matching is one-to-one. Optimal matching is the true minimizer of the objective function, and can be extended to the $1:k$ matching case via $b$-matching while retaining optimality.
+the ``such that'' condition simply specifies that the matching is one-to-one. As such, optimal matching via the Hungarian algorithm minimizes the total sum of distances between matches in the matched subset.
+
+\paragraph{Extensions.} The Hungarian algorithm can be extended to the $1:k$ matching case via $b$-matching while retaining optimality.
 This process involves adding $k$ ``copy'' nodes for each node representing a $T$ datapoint, each with identical edges as the original node, and then perform the optimal matching on the resulting graph.
 However, as \textcite{khan_efficient_2016} notes, this can lead to calculations which quickly become time consuming as the total number of data points increases. \textcite{khan_efficient_2016} goes on further to explore efficient approximation algorithms of the $b$-matching, such as the $b$-\textsc{Suitor} algorithm.
 
-\paragraph{Greedy Matching.} Greedy algorithms have the benefit of running much quicker than optimal matching algorithms, and are often the default in other observational data matching software, such as \texttt{MatchIt} \parencite{ho_matchit_2011}. These methods are equivalent to sorting the edges of the graph in ascending order, and naively popping off the top of the list the next match. While these methods benefit from speed, they guarantee nothing with regards to optimality. This can be particularly problematic in the $1:k$ scenario \cite{rosenbaum_central_1983}, where the order in matches are assigned can have matches implications; compare this to optimal matching, which is a simultaneous match.
+\subsubsection{Greedy Matching}
+
+Greedy algorithms have the benefit of running much quicker than optimal matching algorithms, and are often the default in other observational data matching software, such as \texttt{MatchIt} \parencite{ho_matchit_2011}. These methods are equivalent to sorting the edges of the graph in ascending order, and naively popping off the top of the list the next match. While these methods benefit from speed, they guarantee nothing with regards to optimality. This can be particularly problematic in the $1:k$ scenario \parencite{rosenbaum_optimal_1989}, where the order in matches are assigned can have matches implications; compare this to optimal matching, which is a simultaneous match.
 
 \subsection{Balance Assessment}
 
-Researchers may wish to assess the balance of their matching, particularly when attempting to heuristically optimize a hyperparameter, such as the caliper. Common numerical methods include standardized mean-differences, variance ratios, and empirical CDF (eCDF) comparison between the two groups \parencite{greifer_assessing_2022}. Most researchers do not check for convergence of moments beyond the second, and as \textcite{basu_use_2008} notes, these moments can take much longer (i.e. require more data) to converge, the effects of which can be particularly detrimental when outcome depends on some non-linear function of the joint distribution of $\mat{X}$. For this reason, \textcite{zhu_kernel-based_2018} recommend using density-based metrics, such as total variation distance or Kolmogorov-Smirnov distance. It is also important to note that balance of the $i$th moment does not imply balance of the $j$th moment across the two groups for $j \geq i$ \parencite{garrido_methods_2014}.
+Researchers may wish to assess the balance of their matching, particularly when attempting to heuristically optimize a hyperparameter, such as the caliper. Common numerical methods include standardized mean-differences, variance ratios, and empirical CDF (eCDF) comparison between the two groups \parencite{greifer_assessing_2022}. Most researchers do not check for convergence of moments beyond the second, and as \textcite{basu_use_2008} report, these moments exhibit much slower convergence, the effects of which can be particularly detrimental when outcome depends on some non-linear function of the joint distribution of $\mat{X}$. For this reason, \textcite{zhu_kernel-based_2018} recommend using density-based metrics, such as total variation distance or Kolmogorov-Smirnov distance. It is also important to note that balance of the $i$th moment does not imply balance of the $j$th moment across the two groups for $j \geq i$ \parencite{garrido_methods_2014}.
 
 There are also many graphical diagnostics for assessing balance. QQ-plots, eCDFs, and density estimates for for the unmatched data and the matched subset, perhaps overlaid, effectively visually convey the balance improvement from matching. One may also plot the improvement in standardized mean differences between the two groups, referred to as a Love plot \parencite{greifer_assessing_2022}. One could also plot the bipartite graph to understand where clusters are appearing, or how large groups of ``similar'' observations are, which observations are most ``dissimilar'' from the rest.
 
@@ -161,7 +167,7 @@ There are also many graphical diagnostics for assessing balance. QQ-plots, eCDFs
 \section{\texttt{matching}: a Python Package for Matching Observational Data}
 
 The most popular implementation of bipartite matching for observational studies is the \texttt{MatchIt} package for R \parencite{ho_matchit_2011}.
-The GitHub repository\footnote{\url{https://github.com/kosukeimai/MatchIt}} boasts an impressive $37000$ downloads per month, and with good reason: the authors of the package are also authors of many of the most popular papers in the field of matching \parencite{ho_matching_2007, imai_causal_2004, king_why_2019, stuart_matching_2010}.
+The GitHub repository\footnote{\url{https://github.com/kosukeimai/MatchIt}} boasts an impressive $37000$ downloads per month, and with good reason: the authors of the package are also authors of many of the most popular papers in the field of matching (e.g. \textcite{ho_matching_2007, imai_causal_2004, king_why_2019, stuart_matching_2010}).
 
 \texttt{MatchIt} is largely used through a single function: \texttt{Matchit::matchit}, which minimally accepts a \texttt{formula} (like those used in \texttt{lm}), \texttt{data}, and a \texttt{method}. The function also allows for iterative matching procedures, complex filters on the suitability of potential matches, and a selection of bipartite matching algorithms. The output of the function is furthermore easily inspected via the ubiquitous \texttt{summary} function, or plotted via \texttt{plot}.
 
@@ -175,9 +181,7 @@ After exploring \texttt{MatchIt}'s capabilities, as well as the Python landscape
   \item inspectable. The user should be able to numerically and graphically inspect each step of the matching procedure.
   \item flexible. The package should provide ``plug-and-play'' tools to customize and conduct an arbitrarily complex matching procedure, without the user needing to implement new classes.
   \item familiar. The package should mimic idioms from popular data science packages\footnote{e.g. \texttt{numpy}, \texttt{pandas}, \texttt{sklearn}, \texttt{networkx}}, and all outputs should be easily coercible to a \texttt{pandas.DataFrame} or a \texttt{numpy.ndarray} for further analysis.
-  \item purpose-built. The package should only implement matching procedures, leaving model-building and effect estimation to the user.
-    The user likely already knows what model they wish to fit to the data, and predicting every foreseeable model is difficult.
-    Narrowing in on the matching procedure alone also helps with the first three goals.
+  \item ``depth over breadth''. The package should only implement matching procedures, leaving model-building and effect estimation to the user. Narrowing in on the matching procedure alone also helps with the first three goals.
 \end{itemize}
 In particular, I focused on separating responsibility between how the distance between feature vectors is calculated, and how the matches are then assigned. Being able to easily adjust distance measure and matching procedure independently is especially valuable when assessing the matching quality via diagnostic tools when tuning a hyperparameter, e.g. the maximum allowable distance, or the number of matches $k$ to find for each treatment observation.
 
@@ -259,9 +263,9 @@ mg.filter_edges(distance=Exact(), include=["is_nice"])
 \end{minted}
 The \texttt{filter\_edges} command will drop any potential matches who do not match exactly on \texttt{"is\_nice"} by simply deleting the edge between them. This extends beyond exact-match filtering. One could filter using \texttt{L2Norm}, for instance, to drop potential matches whose $L^2$ norm distance was above some maximum threshold.
 
-There are also methods to \texttt{filter\_nodes} by label or order, as well as to \texttt{filter\_subgraphs}, which filters the disjoint subgraphs of the graph by a variety of metrics; they will not be discussed here, but readers are referred to \texttt{matching} documentation hosted on the GitHub\footnote{\url{https://github.com/jackpotrykus/propensity-score-matching-thesis}}.
+There are also methods to \texttt{filter\_nodes} by label or order, as well as to \texttt{filter\_subgraphs}, which filters the disjoint subgraphs of the graph by a variety of metrics\footnote{\texttt{filter\_subgraphs} is particularly relevant for strata-based matching methods like CEM, which often filter strata based on the total number of observations (from each group), the ratio of treatment to control}; they will not be discussed here, but readers are referred to \texttt{matching} documentation hosted on the GitHub\footnote{\url{https://github.com/jackpotrykus/propensity-score-matching-thesis}}.
 
-\paragraph{Matching.} Once the user has set the edges of the graph and completed their filtering, they may wish to conduct a $1:k$ matching between treatment and control, for some integer $k \geq 1$\footnote{Note that this is not always necessary, particularly in the case of coarsened exact matching (CEM)}.
+\paragraph{Matching.} Once the user has set the edges of the graph and completed their filtering, they may wish to conduct a $1:k$ matching between treatment and control, for some integer $k \geq 1$\footnote{This is not always necessary, particularly in the case of CEM}.
 The user does this via a call to the \texttt{match} method. The user can control $k$ with \texttt{n\_match}, the maximum number of matches to find for each observation. Some treatment observations will not be able to be matched with this many control observations; they can be automatically pruned with the \texttt{min\_match} parameter. The parameter \texttt{replace} is a boolean, indicating whether multiple treatment observations may match with the same control observation, which is \texttt{False} by default. Finally, the user has a choice of greedy (keyword argument: \texttt{"greedy"} or \texttt{"fast"}) or optimal matches (keyword argument: \texttt{"optimal"}, \texttt{"hungarian"}, \texttt{"kuhn"}, or \texttt{"munkres"}).
 \begin{minted}[linenos, fontsize=\small]{python3}
 # Now we should match the graph
@@ -269,7 +273,7 @@ The user does this via a call to the \texttt{match} method. The user can control
 mg.match(n_match=2, min_match=2, method="optimal")
 \end{minted}
 
-\paragraph{Balance Assessment.} The user can then compare the balance of the \texttt{input\_data} and the \texttt{match\_data}\footnote{In the case of Exact matching edges, the match\_data should consist of all subgraphs of order at least 2}. Note that \texttt{match\_data} is a subset of \texttt{input\_data}, plus a new column, \texttt{"match\_group"}.
+\paragraph{Balance Assessment.} The user can then compare the balance of the \texttt{input\_data} and the \texttt{match\_data}\footnote{In the case of Exact matching edges, the \texttt{match\_data} should consist of all subgraphs of order at least 2}. Note that \texttt{match\_data} is a subset of \texttt{input\_data}, plus a new column, \texttt{"match\_group"}.
 \begin{minted}[linenos, fontsize=\small]{python3}
 # Can get dataframes of input_data and match_data
 input_df = mg.input_data.frame
@@ -334,6 +338,11 @@ Papers with data generation:
 \section{Conclusion}
 
 
+\cleardoublepage
+\section*{Addenda}
+\addcontentsline{toc}{section}{Addenda}
+
+
 
 % NOTE: SEE LINK BELOW
 % https://tex.stackexchange.com/questions/8458/making-the-bibliography-appear-in-the-table-of-contents
@@ -342,5 +351,6 @@ Papers with data generation:
 \phantomsection
 \addcontentsline{toc}{section}{Bibliography}
 \printbibliography
+
 
 \end{document}
