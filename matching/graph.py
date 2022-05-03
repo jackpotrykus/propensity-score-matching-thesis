@@ -2,6 +2,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 import enum
 from typing import Dict, Hashable, Iterable, Iterable, List, Optional, TypeVar, Union
+import warnings
 
 import networkx as nx
 from numpy import typing as npt
@@ -629,7 +630,10 @@ class MatchingGraph:
                 ro, co = cid_order, tid_order
 
             # Convert the subgraph into a biadjacency matrix
-            bm = nx.algorithms.bipartite.biadjacency_matrix(H, row_order=ro, column_order=co)
+            with warnings.catch_warnings():
+                # `biadjacency_matrix` will soon return a scipy sparse array (instead of a matrix); we already ensure this
+                warnings.simplefilter(action='ignore', category=FutureWarning)
+                bm = sparse.csr_array(nx.algorithms.bipartite.biadjacency_matrix(H, row_order=ro, column_order=co))
             if not isinstance(bm, (sparse.csr_array, sparse.csr_matrix)):
                 raise nx.NetworkXError(f"Failed to create biadjacency matrix, got {type(bm)=}")
 

@@ -244,50 +244,49 @@ Euclidean = L2Norm
 
 
 # TODO: Refactor the below
-# from sklearn.preprocessing import StandardScaler
-# @dataclass
-# class Mahalanobis(Norm):
-#     """Mahalanobis distance. This is equivalent to standard-scaling all vectors to have mean 0 and variance 1, and then
-#     using :class:`L2Norm` distance on the standard-scaled differences
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from matching import preprocessing
+from matching._typing import sklearn_types as skt
 
-#     Attributes
-#     ----------
-#     p: Union[int, float]
-#         Which LpNorm to use. Either an integer value, or infinity. This is pre-set to 2 for Mahalanobis norm.
-#     max_distance: float
-#         Max allowable edge weight. Can be used as a tuning parameter for identifying similar groups
-#     tol: float
-#         A small float. Edge weights of 0 (perfect matches) are replaced with this value, so that the sparse matrix
-#         representation does not drop perfect matches (normally, 0 = no edge). Does not affect max_distance
-#         See DEFAULT_DISTANCE_TOL for details
-#     """
+@dataclass
+class Mahalanobis(Norm):
+    """Mahalanobis distance. This is equivalent to standard-scaling all vectors to have mean 0 and variance 1, and then
+    using :class:`L2Norm` distance on the standard-scaled differences
 
-#     p: Union[int, float] = field(init=False, default=2)
+    Attributes
+    ----------
+    p: Union[int, float]
+        Which LpNorm to use. Either an integer value, or infinity. This is pre-set to 2 for Mahalanobis norm.
+    max_distance: float
+        Max allowable edge weight. Can be used as a tuning parameter for identifying similar groups
+    tol: float
+        A small float. Edge weights of 0 (perfect matches) are replaced with this value, so that the sparse matrix
+        representation does not drop perfect matches (normally, 0 = no edge). Does not affect max_distance
+        See DEFAULT_DISTANCE_TOL for details
+    """
 
-#     def _preprocess_data(self, data: MatchingDataset) -> MatchingDataset:
-#         data.X = pd.DataFrame(StandardScaler().fit_transform(data.Xarr))
-#         return data
+    model: skt._Preprocessor = field(init=False)
+    p: Union[int, float] = field(init=False, default=2)
 
-# from sklearn.linear_model import LogisticRegression
-# from matching import preprocessing
-# from matching._typing import sklearn_types as skt
-# @dataclass
-# class PropensityScore(L1Norm):
-#     model: skt._Classifier = field(default_factory=lambda: LogisticRegression(penalty="none"))
-#     caliper: float = field(default=np.inf)
-#     use_logit: bool = True
-#     tol: float = field(default=DEFAULT_DISTANCE_TOL)
+    def _compute(self, data: MatchingDataset) -> _GraphUpdateInfo:
+        self.model = StandardScaler()
+        scaled_X = self.model.fit_transform(data.arrs.X)
+        return super()._compute(MatchingDataset(scaled_X, data.z, data.ids))
 
-#     p: int = field(init=False, default=1)
-#     max_distance: float = field(init=False, default=np.inf)
 
-#     def _preprocess_data(self, data: Dataset) -> Dataset:
-#         data = super()._preprocess_data(data)
-#         Xarr = data.Xarr
-#         if data.exact is not None:
-#             Xarr = np.hstack([Xarr, pd.get_dummies(data.exact, drop_first=True).values])
+@dataclass
+class PropensityScore(L1Norm):
+    model: skt._Classifier = field(default_factory=lambda: LogisticRegression(penalty="none"))
+    caliper: float = field(default=np.inf)
+    use_logit: bool = True
+    tol: float = field(default=DEFAULT_DISTANCE_TOL)
 
-#         scores = preprocessing.propensity_score(Xarr, data.z.values, model=self.model, use_logit=self.use_logit)
+    p: int = field(init=False, default=1)
+    max_distance: float = field(init=False, default=np.inf)
 
-#         self.max_distance = self.caliper * np.std(scores)
-#         return Dataset(scores, data.z, data.ids, data.exact)
+    def _compute(self, data: MatchingDataset) -> _GraphUpdateInfo:
+        scores = preprocessing.propensity_score(data.arrs.X, data.arrs.z, model=self.model, use_logit=self.use_logit)
+
+        self.max_distance = self.caliper * np.std(scores)
+        return super()._compute(MatchingDataset(scores, data.z, data.ids))
