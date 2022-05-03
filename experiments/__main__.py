@@ -3,12 +3,10 @@ import numpy as np
 
 
 def main():
-    experiments.clean_output_base_dir()
-
     SIZE1 = 250
     SIZE0 = 750
     P = 5
-    NITER_PER_DGM = 50
+    NITER_PER_DGM = 30
 
     CALIPERS = np.round(np.linspace(0.05, 0.5, 10), 2)
 
