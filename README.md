@@ -1,29 +1,24 @@
 # propensity-score-matching-thesis
 
-Source code and resources for my MSc Statistics thesis on Propensity Score Matching (PSM)
+Source code and resources for my MSc Statistics thesis on matching methods for use with observational studies.
 
-# What is propensity score matching?
+Matching is a field within causal inference which attempts to reduce the effects of selection bias on parameter estimates;
+for example, estimates of the Average Treatment Effect (ATE).
 
-<!-- TODO: Put this into my own words... -->
+# Repository Overview
 
-Per Wikipedia:
-> In the statistical analysis of observational data, propensity score matching (PSM) is a statistical matching technique that attempts to estimate the effect of a treatment, policy, or other intervention by accounting for the covariates that predict receiving the treatment. PSM attempts to reduce the bias due to confounding variables that could be found in an estimate of the treatment effect obtained from simply comparing outcomes among units that received the treatment versus those that did not. Paul R. Rosenbaum and Donald Rubin introduced the technique in 1983.
+* `paper` contains the LaTeX source (and `.bib` files) for my thesis;
+* `matching` is a python package I have developed for matching observational data;
+* `experiments` contains experiments conducted using `matching`; run the experiments via
+```zsh
+python -m experiments
+```
+* `docs` contains extensive documentation for the package `matching`
 
-# Overview of Experiments
-
-## Datasets
-<!-- TODO: describe data generation -->
-
-## Experiments
-
-* Investigate the "PSM Paradox": examine performance of PSM as treatment imbalance $\to 0$
-* Investigate the utility of the "Prognostic Score": propensity score matching vs. prognostic score matching vs two-score matching
-* Comparison of score-based methods to feature vector norm based methods
-* Comparison of greedy vs optimal matching in $1:k$ matching, for various values of $k$ (say $k \in \{1, \ldots, 10\}$)
-* IDEA: PSM (+ Prognostic?) with "auto-coarsened" data
 
 # Development Information
 
+* Install rqeuirements via `python -m pip install -r requirements.txt`
 * Python package written in `python 3.8.6`
 * Docstrings follow [numpydoc](https://numpydoc.readthedocs.io/en/latest/format.html) style, 
 and makes exhaustive use of Python's gradual [`typing`](https://docs.python.org/3/library/typing.html) library
