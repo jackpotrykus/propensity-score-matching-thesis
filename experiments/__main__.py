@@ -3,11 +3,13 @@ import numpy as np
 
 
 def main():
+    # Set constant hyperparameters
     SIZE1 = 250
     SIZE0 = 750
     P = 5
     NITER_PER_DGM = 30
 
+    # We'll use the same calipers for each experiment too
     CALIPERS = np.round(np.linspace(0.05, 0.5, 10), 2)
 
     # Setting up experiment 1: caliper vs correlations

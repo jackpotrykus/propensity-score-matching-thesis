@@ -130,7 +130,7 @@ class CaliperExperiment:
     theta1s: np.ndarray = field(default_factory=lambda: np.array([1], dtype=np.float_))
     niter_per_dgm: int = field(default=1)
 
-    log: ExperimentDataLogger = field(init=False)
+    logger: ExperimentDataLogger = field(init=False)
     rho_caliper_n_match_matrix: np.ndarray = field(init=False)
     rho_caliper_mean_abs_smd_matrix: np.ndarray = field(init=False)
     rho_caliper_max_abs_smd_matrix: np.ndarray = field(init=False)
@@ -140,7 +140,7 @@ class CaliperExperiment:
 
     def __post_init__(self) -> None:
         """Initializes matrices"""
-        self.log = ExperimentDataLogger(self.experiment_name)
+        self.logger = ExperimentDataLogger(self.experiment_name)
         self.rho_caliper_n_match_matrix = np.zeros([self.nrho, self.ncaliper], dtype=np.int_)
         self.rho_caliper_mean_abs_smd_matrix = np.zeros([self.nrho, self.ncaliper], dtype=np.float_)
         self.rho_caliper_max_abs_smd_matrix = np.zeros([self.nrho, self.ncaliper], dtype=np.float_)
@@ -203,7 +203,7 @@ class CaliperExperiment:
                     # Sometimes a matching cannot be found; we should increase sample size
                     # Print some info about parameters
                     print(f"{self.experiment_name} FAILED: {theta1=}, {rho=}, {caliper=}")
-                    raise
+                    continue
 
                 n_match = mg.graph_data.nobs
                 standardized_mean_differences = np.asarray(graph_subdf[True].values)
@@ -234,9 +234,9 @@ class CaliperExperiment:
 
         figsize = (self.ntheta1 * 2, self.ncaliper * 2)
         # fmt: off
-        self.log.save_plot(_plot_heatmap_zero_arg(self.theta1_caliper_n_match_matrix, fmt="d"), "theta1_caliper_n_match", figsize=figsize)
-        self.log.save_plot(_plot_heatmap_zero_arg(self.theta1_caliper_mean_abs_smd_matrix, fmt="f"), "theta1_caliper_mean_abs_smd", figsize=figsize)
-        self.log.save_plot(_plot_heatmap_zero_arg(self.theta1_caliper_max_abs_smd_matrix, fmt="f"), "theta1_calipermax_abs_smd", figsize=figsize)
+        self.logger.save_plot(_plot_heatmap_zero_arg(self.theta1_caliper_n_match_matrix, fmt="d"), "theta1_caliper_n_match", figsize=figsize)
+        self.logger.save_plot(_plot_heatmap_zero_arg(self.theta1_caliper_mean_abs_smd_matrix, fmt="f"), "theta1_caliper_mean_abs_smd", figsize=figsize)
+        self.logger.save_plot(_plot_heatmap_zero_arg(self.theta1_caliper_max_abs_smd_matrix, fmt="f"), "theta1_calipermax_abs_smd", figsize=figsize)
         # fmt: on
 
     def plot_rho_heatmaps(self) -> None:
@@ -258,7 +258,7 @@ class CaliperExperiment:
 
         figsize = (self.nrho * 2, self.ncaliper * 2)
         # fmt: off
-        self.log.save_plot(_plot_heatmap_zero_arg(self.rho_caliper_n_match_matrix, fmt="d"), "rho_caliper_n_match", figsize=figsize)
-        self.log.save_plot(_plot_heatmap_zero_arg(self.rho_caliper_mean_abs_smd_matrix, fmt="f"), "rho_caliper_mean_abs_smd", figsize=figsize)
-        self.log.save_plot(_plot_heatmap_zero_arg(self.rho_caliper_max_abs_smd_matrix, fmt="f"), "rho_calipermax_abs_smd", figsize=figsize)
+        self.logger.save_plot(_plot_heatmap_zero_arg(self.rho_caliper_n_match_matrix, fmt="d"), "rho_caliper_n_match", figsize=figsize)
+        self.logger.save_plot(_plot_heatmap_zero_arg(self.rho_caliper_mean_abs_smd_matrix, fmt="f"), "rho_caliper_mean_abs_smd", figsize=figsize)
+        self.logger.save_plot(_plot_heatmap_zero_arg(self.rho_caliper_max_abs_smd_matrix, fmt="f"), "rho_calipermax_abs_smd", figsize=figsize)
         # fmt: on
