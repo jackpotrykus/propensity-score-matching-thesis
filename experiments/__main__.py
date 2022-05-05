@@ -7,7 +7,7 @@ def main():
     SIZE1 = 250
     SIZE0 = 750
     P = 5
-    NITER_PER_DGM = 30
+    NITER_PER_DGM = 100
 
     # We'll use the same calipers for each experiment too
     CALIPERS = np.round(np.linspace(0.05, 0.5, 10), 2)
@@ -15,7 +15,7 @@ def main():
     # Setting up experiment 1: caliper vs correlations
     RHOS = np.round(np.linspace(0, 0.8, 9), 2)
     experiment1 = experiments.CaliperExperiment(
-        experiment_name="caliper_vs_correlation_big",
+        experiment_name="caliper_vs_correlation_big2",
         size0=SIZE0,
         size1=SIZE1,
         p=P,
@@ -29,7 +29,7 @@ def main():
     # Setting up experiment 2: caliper vs imbalance
     THETA1S = np.round(np.linspace(0, 1, 11), 2)
     experiment2 = experiments.CaliperExperiment(
-        experiment_name="caliper_vs_imbalance_big",
+        experiment_name="caliper_vs_imbalance_big2",
         size0=SIZE0,
         size1=SIZE1,
         p=P,

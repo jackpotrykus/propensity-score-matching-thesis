@@ -131,20 +131,20 @@ class CaliperExperiment:
     niter_per_dgm: int = field(default=1)
 
     logger: ExperimentDataLogger = field(init=False)
-    rho_caliper_n_match_matrix: np.ndarray = field(init=False)
+    rho_caliper_prop1_match_matrix: np.ndarray = field(init=False)
     rho_caliper_mean_abs_smd_matrix: np.ndarray = field(init=False)
     rho_caliper_max_abs_smd_matrix: np.ndarray = field(init=False)
-    theta1_caliper_n_match_matrix: np.ndarray = field(init=False)
+    theta1_caliper_prop1_match_matrix: np.ndarray = field(init=False)
     theta1_caliper_mean_abs_smd_matrix: np.ndarray = field(init=False)
     theta1_caliper_max_abs_smd_matrix: np.ndarray = field(init=False)
 
     def __post_init__(self) -> None:
         """Initializes matrices"""
         self.logger = ExperimentDataLogger(self.experiment_name)
-        self.rho_caliper_n_match_matrix = np.zeros([self.nrho, self.ncaliper], dtype=np.int_)
+        self.rho_caliper_prop1_match_matrix = np.zeros([self.nrho, self.ncaliper], dtype=np.float_)
         self.rho_caliper_mean_abs_smd_matrix = np.zeros([self.nrho, self.ncaliper], dtype=np.float_)
         self.rho_caliper_max_abs_smd_matrix = np.zeros([self.nrho, self.ncaliper], dtype=np.float_)
-        self.theta1_caliper_n_match_matrix = np.zeros([self.ntheta1, self.ncaliper], dtype=np.int_)
+        self.theta1_caliper_prop1_match_matrix = np.zeros([self.ntheta1, self.ncaliper], dtype=np.float_)
         self.theta1_caliper_mean_abs_smd_matrix = np.zeros([self.ntheta1, self.ncaliper], dtype=np.float_)
         self.theta1_caliper_max_abs_smd_matrix = np.zeros([self.ntheta1, self.ncaliper], dtype=np.float_)
 
@@ -167,15 +167,17 @@ class CaliperExperiment:
         self, tdx: int, cdx: int, n_match: int, mean_abs_smd: float, max_abs_smd: float
     ) -> None:
         """Update the theta-caliper matricies. We divide by `self.nrho * self.niter_per_dgm` so that this matrix records the marginal average across all rho"""
-        self.theta1_caliper_n_match_matrix[tdx, cdx] += n_match / (self.nrho * self.niter_per_dgm)
         self.theta1_caliper_mean_abs_smd_matrix[tdx, cdx] += mean_abs_smd / (self.nrho * self.niter_per_dgm)
         self.theta1_caliper_max_abs_smd_matrix[tdx, cdx] += max_abs_smd / (self.nrho * self.niter_per_dgm)
+        # We also dide this matrix by `self.size1 * 2` to reflect portion of group 1 that matched
+        self.theta1_caliper_prop1_match_matrix[tdx, cdx] += n_match / (self.nrho * self.niter_per_dgm * self.size1 * 2)
 
     def _update_rho_matrices(self, rdx: int, cdx: int, n_match: int, mean_abs_smd: float, max_abs_smd: float) -> None:
         """Update the rho-caliper matricies. We divide by `self.ntheta1 * self.niter_per_dgm` so that this matrix records the marginal average across all theta1"""
-        self.rho_caliper_n_match_matrix[rdx, cdx] += n_match / (self.ntheta1 * self.niter_per_dgm)
         self.rho_caliper_mean_abs_smd_matrix[rdx, cdx] += mean_abs_smd / (self.ntheta1 * self.niter_per_dgm)
         self.rho_caliper_max_abs_smd_matrix[rdx, cdx] += max_abs_smd / (self.ntheta1 * self.niter_per_dgm)
+        # We also dide this matrix by `self.size1 * 2` to reflect portion of group 1 that matched
+        self.rho_caliper_prop1_match_matrix[rdx, cdx] += n_match / (self.ntheta1 * self.niter_per_dgm * self.size1 * 2)
 
     def _iterate_generated_data(self) -> Iterator[Tuple[Tuple[int, int], Tuple[float, float], ExperimentDataModel]]:
         """Iterate through generated data according to supplied hyperparameters"""
@@ -232,11 +234,11 @@ class CaliperExperiment:
 
             return inner
 
-        figsize = (self.ntheta1 * 2, self.ncaliper * 2)
+        figsize = (self.ncaliper, self.ntheta1 / 2)
         # fmt: off
-        self.logger.save_plot(_plot_heatmap_zero_arg(self.theta1_caliper_n_match_matrix, fmt="d"), "theta1_caliper_n_match", figsize=figsize)
-        self.logger.save_plot(_plot_heatmap_zero_arg(self.theta1_caliper_mean_abs_smd_matrix, fmt="f"), "theta1_caliper_mean_abs_smd", figsize=figsize)
-        self.logger.save_plot(_plot_heatmap_zero_arg(self.theta1_caliper_max_abs_smd_matrix, fmt="f"), "theta1_calipermax_abs_smd", figsize=figsize)
+        self.logger.save_plot(_plot_heatmap_zero_arg(self.theta1_caliper_prop1_match_matrix, fmt=".2f"), "theta1_caliper_prop1_match", figsize=figsize)
+        self.logger.save_plot(_plot_heatmap_zero_arg(self.theta1_caliper_mean_abs_smd_matrix, fmt=".2f"), "theta1_caliper_mean_abs_smd", figsize=figsize)
+        self.logger.save_plot(_plot_heatmap_zero_arg(self.theta1_caliper_max_abs_smd_matrix, fmt=".2f"), "theta1_calipermax_abs_smd", figsize=figsize)
         # fmt: on
 
     def plot_rho_heatmaps(self) -> None:
@@ -256,9 +258,9 @@ class CaliperExperiment:
 
             return inner
 
-        figsize = (self.nrho * 2, self.ncaliper * 2)
+        figsize = (self.ncaliper, self.nrho / 1.25)
         # fmt: off
-        self.logger.save_plot(_plot_heatmap_zero_arg(self.rho_caliper_n_match_matrix, fmt="d"), "rho_caliper_n_match", figsize=figsize)
-        self.logger.save_plot(_plot_heatmap_zero_arg(self.rho_caliper_mean_abs_smd_matrix, fmt="f"), "rho_caliper_mean_abs_smd", figsize=figsize)
-        self.logger.save_plot(_plot_heatmap_zero_arg(self.rho_caliper_max_abs_smd_matrix, fmt="f"), "rho_calipermax_abs_smd", figsize=figsize)
+        self.logger.save_plot(_plot_heatmap_zero_arg(self.rho_caliper_prop1_match_matrix, fmt=".2f"), "rho_caliper_prop1_match", figsize=figsize)
+        self.logger.save_plot(_plot_heatmap_zero_arg(self.rho_caliper_mean_abs_smd_matrix, fmt=".2f"), "rho_caliper_mean_abs_smd", figsize=figsize)
+        self.logger.save_plot(_plot_heatmap_zero_arg(self.rho_caliper_max_abs_smd_matrix, fmt=".2f"), "rho_calipermax_abs_smd", figsize=figsize)
         # fmt: on
