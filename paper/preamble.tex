@@ -14,6 +14,8 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{bm}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{bbm}
 \usepackage{enumitem}
 \usepackage[margin=2.5cm]{geometry}
@@ -59,17 +61,19 @@
 \let\thetitle\@title
 \let\theauthor\@author
 \let\thedate\@date
+% \let\thesubtitle\@subtitle
 \makeatother
 
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0pt}
 \lhead{\theauthor}
 \rhead{\thetitle}
-% \rhead{\thedate}
+% \lhead{}
+% \rhead{}
+\lfoot{{\small{}This document is internal to the University of Chicago Department of Statistics.}}
+\cfoot{}
+\rfoot{\thepage}
 \usepackage{lastpage}
-\cfoot{\thepage}
-\lfoot{}
-\rfoot{}
 
 % `answer` box: more customizable
 \usepackage{tcolorbox}
@@ -97,8 +101,17 @@
 
 \allowdisplaybreaks
 
-
+% Shortcuts for math
 \newcommand{\reals}{\ensuremath{\mathbbmss R}}
 \renewcommand{\vec}[1]{\ensuremath{\boldsymbol{\mathsfbf{#1}}}}
 \newcommand{\mat}[1]{\ensuremath{#1}}
 \newcommand{\set}[1]{\ensuremath{\mathcal{#1}}}
+
+% Subtitle! https://tex.stackexchange.com/questions/50182/subtitle-with-the-maketitle-page
+\newcommand{\subtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip0.5em
+  }%
+}
