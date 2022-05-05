@@ -89,10 +89,13 @@
 \section{Introduction}
 \begin{frame}{Introduction}{Problem Setting}
 	\begin{itemize}
-		\item Observational studies frequent in econometrics, psychology, and medical research
+		\item Observational studies frequent in econometrics, psychology, and medical research.
 		\item This presentation: binary treatment/control variable, $\vec{z}$.
-		\item Goal is to estimate ATE: $\mathbbmss E [y_{i1} - y_{i0}]$
+		\item Most often, goal is to estimate ATE: $\mathbbmss E [y_{i1} - y_{i0}]$.
 		\item Solve this problem via \emph{matching} treatment observations to control observations
+			\begin{itemize}
+				\item Produce a matched subset suitable for analysis
+			\end{itemize}
 		\item We break this down into two orthogonal problems:
 			\begin{itemize}
 				\item How is distance measured?
@@ -105,7 +108,7 @@
 \begin{frame}{Introduction}{Notation}
 	Now, we will introduce some notation, so we can precisely talk about construction of different matching methods.
 	\begin{itemize}
-		\item $\mat{X} \in \reals^{(n + m) \times p}$ of features; $\mat{X}_T \in \reals^{n \times p}, \mat{X}_C \in \reals^{m \times p}$
+		\item $\mat{X} \in \reals^{(n + m) \times p}$ of features; $\mat{X}_T \in \reals^{n \times p}, \mat{X}_C \in \reals^{m \times p}$, $n \leq m$;
 		\item $\vec{z} \in \{0, 1\}^{n + m}$ of binary treatment assignments;
 		\item $d: \reals^p \times \reals^p \to \reals^+$ is a distance measure between feature vectors, e.g. $d(\vec{x}_{T_{i}}, \vec{x}_{C_{j}})$;
 		\item $\mathcal{D}_d : \reals^{n \times p} \times \reals^{m \times p} \to \reals^{n \times m}$ produces \emph{biadjacency matrix};
@@ -142,10 +145,10 @@
 		The \emph{propensity score} is the balancing score \( b(\mat{X}) = \mathbbmss E [\vec{z} | \mat{X}] \).
 	\end{definition}%
 	\begin{itemize}
-		\item Even if not used for matching, a useful diagnostic~\parencite{dehejia_causal_1999}.
 		\item Implicitly ``weights'' features by heterogeneity wrt $\vec{z}$.
-		\item Continuous scores: \textcite{imai_causal_2004}.
 		\item Often prune potential matches with a caliper $c$.
+		\item Even if not used for matching, a useful diagnostic~\parencite{dehejia_causal_1999}.
+		\item Continuous scores: \textcite{imai_causal_2004}.
 	\end{itemize}
 \end{frame}
 
@@ -156,11 +159,11 @@
 	\begin{itemize}
 		\item Note that the expectation is with respect to control data $C$.
 		\begin{itemize}
+			\item No information about ATE
 			\item Previous attempts to match on outcomes failed, such as \textcite{miettinen_stratification_1976}.
+			\item  ``conditionality principle'' \textcite{hansen_prognostic_2008}.
 		\end{itemize}
 		\item Implicitly ``weights'' features by heterogeneity wrt $\vec{y}$.
-		\item  ``conditionality principle'' suggests usefulness \textcite{hansen_prognostic_2008}.
-		\item Joint use of propensity and prognostic scores \textcite{leacy_joint_2014}.
 	\end{itemize}
 \end{frame}
 
@@ -194,6 +197,7 @@
 \end{frame}
 
 
+\subsection{Matching Algorithms}
 \begin{frame}{Bipartite Matching Algorithms}{}
 	Define a matching $\set{M}$ as a set of tuples $(i, j)$ indicating a matching between observations $T_i$ and $C_j$. 
 	``Optimal'' matching via the Hungarian algorithm \parencite{munkres_algorithms_1957}.
@@ -202,12 +206,12 @@
 	\end{equation}
 	\begin{itemize}
 		\item Extendable to $1:k$ matching via $b$-matching.
-		\item Slow: $O((n + m)^3)$; approximation: $b$-\textsc{Suitor}~\parencite{khan_efficient_2016}.
+		\item Slow: $O((k \cdot n + m)^3)$; approximation: $b$-\textsc{Suitor}~\parencite{khan_efficient_2016}.
 	\end{itemize}
 
 	Greedy matching: sort edges by distance, pop matches off the top.
 	\begin{itemize}
-		\item No optimality assured.
+		\item When control observations may not be reused, no optimality assured.
 		\item Problems when matching $1:k$ \parencite{rosenbaum_optimal_1989}.
 	\end{itemize}
 \end{frame}
@@ -244,7 +248,7 @@
 			\rho & \text{ otherwise.}
 		\end{cases}
 	\end{align}
-		\item Balance metrics: mean ASMD\footnote{Absolute Standardized Mean Difference}, maximum ASMD, proportion of treatment observations matched.
+		\item Metrics: mean ASMD\footnote{Absolute Standardized Mean Difference}, proportion of treatment observations matched.
 		\begin{itemize}
 			\item In practice: use more robust metrics \parencite{basu_use_2008, zhu_kernel-based_2018}.
 		\end{itemize}
@@ -271,11 +275,6 @@
 		\includegraphics[width=\textwidth]{../paper/img/output30/caliper_vs_imbalance_big/plots/theta1_caliper_mean_abs_smd.png}
 	\end{center}
 \end{frame}
-\begin{frame}{Experiments}{Caliper vs. Imbalance: Maximum Absolute Standardized Mean Difference}
-	\begin{center}
-		\includegraphics[width=\textwidth]{../paper/img/output30/caliper_vs_imbalance_big/plots/theta1_calipermax_abs_smd.png}
-	\end{center}
-\end{frame}
 \begin{frame}{Experiments}{Caliper vs. Imbalance: Proportion of Treatment Observations Matched}
 	\begin{center}
 		\includegraphics[width=\textwidth]{../paper/img/output30/caliper_vs_imbalance_big/plots/theta1_caliper_prop1_match.png}
@@ -297,11 +296,6 @@
 \begin{frame}{Experiments}{Caliper vs. Correlation: Mean Absolute Standardized Mean Difference}
 	\begin{center}
 		\includegraphics[width=\textwidth]{../paper/img/output30/caliper_vs_correlation_big/plots/rho_caliper_mean_abs_smd.png}
-	\end{center}
-\end{frame}
-\begin{frame}{Experiments}{Caliper vs. Correlation: Maximum Absolute Standardized Mean Difference}
-	\begin{center}
-		\includegraphics[width=\textwidth]{../paper/img/output30/caliper_vs_correlation_big/plots/rho_calipermax_abs_smd.png}
 	\end{center}
 \end{frame}
 \begin{frame}{Experiments}{Caliper vs. Correlation: Proportion of Treatment Observations Matched}
