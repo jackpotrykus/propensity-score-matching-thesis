@@ -3,7 +3,7 @@
 \input{preamble.tex}
 
 \title{Development of a Python Package for Matching Observational Data}
-\subtitle{Advisors: Jingshu Wang, Sanjay Krishnan}
+\subtitle{{\Large Advisors: Jingshu Wang, Sanjay Krishnan}}
 \author{Jack Potrykus}
 \date{\today}
 
@@ -11,10 +11,20 @@
 
 % Insert some text making clear that this is an MS thesis
 \begin{center}{\large \bfseries Master’s Paper for the University of Chicago Department of Statistics}\end{center}
+\vspace{5cm}
 
 % Relax `\maketitle` to allow text on same page. https://tex.stackexchange.com/questions/86249/maketitle-text-before-title
 {\let\newpage\relax\maketitle}
 
+
+
+% Insert a spot for the advisor's signature
+\vfill{\null}
+{\Large 
+  Approved by:~\hrulefill\vspace{0.5cm}\\%
+  Date:~\hrulefill%
+}
+\newpage{}
 
 \section*{Abstract}
 \label{sec:abstract}
@@ -27,11 +37,6 @@ In doing so, it explores several distance metrics, in particular the propensity 
 I then showcase the functionality of \texttt{matching}, an open-source Python package I have developed for matching observational data which takes a graph-centric approach, something which no other package offers.
 I finally explore some practical considerations of parameter tuning when matching via experiments on simulated data.
 
-% Insert a spot for the advisor's signature
-\vfill{\null}
-Approved by: \hrulefill~Date: \hrulefill
-
-\newpage{}
 \tableofcontents{}
 \newpage{}
 
