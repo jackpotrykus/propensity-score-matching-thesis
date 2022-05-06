@@ -144,7 +144,7 @@ The key difference is that DAME choses a subset the features to match on by mini
 \subsubsection{$L^p$ Norms and Mahalanobis Distance}
 \label{subsubsec:normdist}
 
-Another valid distance measure is the $L^p$ norms of the difference between feature vectors, i.e. $\| \vec{x}_T - \vec{x}_C \|_p$. 
+A rather obvious distance measure is the $L^p$ norm of the difference between feature vectors, i.e. $\| \vec{x}_T - \vec{x}_C \|_p$. 
 As~\textcite{king_why_2019} note, norm-based distance metrics attempt to replicate fully-blocked design, and thus offer some theoretical advantages.
 However, they do not incorporate any weighting about a feature's ``importance'', as we saw with balancing scores and almost exact matching.
 Hence, norms are most often used in the form of Mahalanobis distance, which first rescales all features to have mean zero and unit variance, and then calculates distances using the $L^2$ norm.
