@@ -156,7 +156,7 @@ This ensures that all features have equal weight in the matching, which may or m
 
 Often, researchers will employ an ``iterative'' distance measure. They may, for example, first calculate propensity scores $\widehat{\vec{z}}$, filter potential matches using a caliper $c$, and then match on Mahalanobis distance \emph{within} clusters; or, in the absence of a caliper, within strata of $\widehat{\vec{z}}$. This idea was explored by~\textcite{rosenbaum_constructing_1985}, who found it to perform better than matching on either propensity score or Mahalanobis distance alone.
 
-\textcite{baltar_mahalanobis_2014} explored the efficacy of this iterative method in practice, relative to propensity score and Mahalanobis distance alone. In the paper, they compare seek to estimate the effect of Brazilian towns' social agenda on public health. They found both the propensity score alone and iterative method to perform admirably, whereas Mahalanobis distance performed poorly; they do not take this as an indictment of Mahalanobis distance matching, and pose for further research to identify conditions under which Mahalnobis distance may perform \emph{better}. The iterative method achieved the greatest reduction in bias for all features, except the propensity score, for which propensity score distance alone (somewhat obviously) saw the greatest bias reduction. However, as~\textcite{austin_optimal_2011} and~\textcite{greifer_assessing_2022} note, balance of the scores does not imply balance of the features, and balancing score balance metrics should only be used as a supplementary diagnostic; the focus of balance assessment should be balance of the features.
+\textcite{baltar_mahalanobis_2014} explored the efficacy of this iterative method in practice, relative to propensity score and Mahalanobis distance alone. In the paper, they seek to estimate the effect of Brazilian towns' social agenda on public health. They found both the propensity score alone and iterative method to perform admirably, whereas Mahalanobis distance performed poorly; they do not take this as an indictment of Mahalanobis distance matching, and pose for further research to identify conditions under which Mahalnobis distance may perform \emph{better}. The iterative method achieved the greatest reduction in bias for all features, except the propensity score, for which propensity score distance alone (somewhat obviously) saw the greatest bias reduction. However, as~\textcite{austin_optimal_2011} and~\textcite{greifer_assessing_2022} note, balance of the scores does not imply balance of the features, and balancing score balance metrics should only be used as a supplementary diagnostic; the focus of balance assessment should be balance of the features.
 
 \subsection{Matching Algorithms}
 
@@ -165,7 +165,7 @@ Once the distance measure has been agreed upon, the researcher must then decide 
 
 \subsubsection{Optimal Matching}
 
-\textcite{rosenbaum_optimal_1989} argues for optimal matching according to the Hungarian algorithm, also known as the Kuhn-Munkres or simply the Munkres algorithm~\parencite{munkres_algorithms_1957}. We will denote a matching a set $\set{M}$ of tuples $(i, j)$, with $i$ representing a treatment-group observations, and $j$ a control-group observations. The Hungarian algorithm solves the \emph{linear assignment problem}, which in this setting may be expressed as
+\textcite{rosenbaum_optimal_1989} argues for optimal matching according to the Hungarian algorithm, also known as the Kuhn-Munkres or simply the Munkres algorithm~\parencite{munkres_algorithms_1957}. We will denote a matching a set $\set{M}$ of tuples $(i, j)$, with $i$ representing a treatment-group observation $T_i$, and $j$ a control-group observation $C_j$. The Hungarian algorithm solves the \emph{linear assignment problem}, which in this setting may be expressed as
 \begin{equation}
   \min_{\set{M}} \sum_{(i, j) \in \set{M}} d(\vec{x}_{T_{i}}, \vec{x}_{C_{j}}), \text{ such that } \forall (i, j), (k, l) \in \set{M}, i = k \iff j = l;
 \end{equation}
@@ -173,7 +173,7 @@ the ``such that'' condition simply specifies that the matching is one-to-one. As
 
 \paragraph{Extensions.} The Hungarian algorithm can be extended to the $1:k$ matching case via $b$-matching while retaining optimality.
 This process involves adding $k$ ``copy'' nodes for each node representing a $T$ datapoint, each with identical edges as the original node, and then perform the optimal matching on the resulting graph.
-However, as~\textcite{khan_efficient_2016} notes, this can lead to calculations which quickly become time consuming as the total number of data points increases.~\textcite{khan_efficient_2016} goes on further to explore efficient approximation algorithms of the $b$-matching, such as the $b$-\textsc{Suitor} algorithm.
+However, as~\textcite{khan_efficient_2016} notes, this can lead to calculations which quickly become time consuming as the total number of data points increases; the runtime is $O((k \cdot n + m)^3)$.~\textcite{khan_efficient_2016} goes on further to explore efficient approximation algorithms of the $b$-matching, such as the $b$-\textsc{Suitor} algorithm.
 
 \subsubsection{Greedy Matching}
 
