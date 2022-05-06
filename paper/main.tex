@@ -227,13 +227,13 @@ This separation of responsibility into two separate class hierarchies allows for
 
 \begin{figure}[h!]
   \center{%
-    \includegraphics[width=0.8\textwidth]{../docs/mermaid/img/relationships.png}%
+    \includegraphics[width=0.7\textwidth]{../docs/mermaid/img/relationships.png}%
   }
   \caption{\label{fig:arch_flow} The relationships between the different modules of \texttt{matching}}.
 \end{figure}
 \begin{figure}[h!]
   \center{%
-    \includegraphics[width=0.9\textwidth]{../docs/mermaid/img/distance_uml.png}%
+    \includegraphics[width=0.8\textwidth]{../docs/mermaid/img/distance_uml.png}%
   }
   \caption{\label{fig:distance_uml} UML Diagram for the \texttt{matching.distance} submodule}
 \end{figure}
@@ -261,7 +261,7 @@ from matching.preprocessing import propensity_score
 # X is an array of propensity scores, z is an array of booleans
 mg = MatchingGraph(X, z)
 \end{minted}
-\paragraph{Setting Edges.} The user should then make a call to the \texttt{set\_edges} method to calculate the distance between each observation the two groups, and set the graph nodes and edge weights. Here, the user supplies a \texttt{\_Distance} measure from \texttt{matching.distance}. The user may supply a \texttt{min\_distance} and/or a \texttt{max\_distance} for an edge to be allowed; in graph terms, this can be considered the edges' \emph{capacity}. For the \texttt{PropensityScore} distance metric, \texttt{max\_distance} is instead set by specifying a \texttt{caliper}; the \texttt{max\_distance} is later inferred, once the scores are calculated.
+\paragraph{Setting Edges.} The user should then make a call to the \texttt{set\_edges} method to calculate the distance between each observation in the two groups, and set the graph nodes and edge weights. Here, the user supplies a \texttt{\_Distance} measure from \texttt{matching.distance}. The user may supply a \texttt{min\_distance} and/or a \texttt{max\_distance} for an edge to be allowed; in graph terms, this can be considered the edges' \emph{capacity}. For the \texttt{PropensityScore} distance metric, \texttt{max\_distance} is instead set by specifying a \texttt{caliper}; the \texttt{max\_distance} is later inferred, once the scores are calculated.
 \begin{minted}[linenos, fontsize=\small]{python3}
 import numpy as np
 from matching.distance import PropensityScore
@@ -286,7 +286,7 @@ The \texttt{filter\_edges} command will drop any potential matches who do not ma
 
 There are also methods to \texttt{filter\_nodes} by label or order, as well as to \texttt{filter\_subgraphs}, which filters the disjoint subgraphs of the graph by a variety of metrics\footnote{\texttt{filter\_subgraphs} is particularly relevant for strata-based matching methods like CEM, which often filter strata based on the total number of observations (from each group), the ratio of treatment to control.}; they will not be discussed here, but readers are referred to \texttt{matching} documentation hosted on the GitHub\footnote{\url{https://github.com/jackpotrykus/propensity-score-matching-thesis}}.
 
-\paragraph{Matching.} Once the user has set the edges of the graph and completed their filtering, they may wish to conduct a $1:k$ matching between treatment and control, for some integer $k \geq 1$\footnote{This is not always necessary, particularly in the case of CEM.}
+\paragraph{Matching.} Once the user has set the edges of the graph and completed their filtering, they may wish to conduct a $1:k$ matching between treatment and control, for some integer $k \geq 1$\footnote{This is not always necessary, particularly in the case of CEM and other strata-based matching methods}.
 The user does this via a call to the \texttt{match} method. The user can control $k$ with \texttt{n\_match}, the maximum number of matches to find for each observation. Some treatment observations will not be able to be matched with this many control observations; they can be automatically pruned with the \texttt{min\_match} parameter. The parameter \texttt{replace} is a boolean, indicating whether multiple treatment observations may match with the same control observation, which is \texttt{False} by default. Finally, the user has a choice of greedy (keyword argument: \texttt{"greedy"} or \texttt{"fast"}) or optimal matches (keyword argument: \texttt{"optimal"}, \texttt{"hungarian"}, \texttt{"kuhn"}, or \texttt{"munkres"}).
 \begin{minted}[linenos, fontsize=\small]{python3}
 # Continue from the previous excerpt. Now we want to conduct 1:k matching
@@ -361,6 +361,7 @@ The codebase is short and succinct, and certainly works well for the specific us
 
 \paragraph{\texttt{dame-flame}.} Developed by Duke's \emph{Almost Matching Exactly Lab}~\parencite{gupta_dame-flame_2021}, \texttt{dame-flame} implements its two titular matching procedures: DAME~\parencite{liu_interpretable_2019} and FLAME~\parencite{wang_flame_2021}. As discussed in \S\ref{subsubsec:exactmatching}, these methods extend CEM using machine learning, calculating a weight vector \vec{w} indicating the relative importance of matching on each feature. These algorithms each run fast, and are easier to inspect than \texttt{DoWhy}. However, since these each seek to replicate CEM, and since these are the \emph{only} matching methods provided by \texttt{dame-flame}, this means that \texttt{dame-flame} can only be used with discrete datasets; for users unwilling to coarsen/discretize their data, or users seeking a matching procedure other than DAME and FLAME, \texttt{dame-flame} is not an option. \texttt{matching} does not currently support these algorithms, but they are ``in-the-works''; it can certainly be implemented as a new \texttt{matching.distance.\_Distance} subclass, and their impressive performance merits their inclusion.
 
+\newpage
 \section{Experiments}
 \label{sec:experiments}
 
@@ -426,11 +427,12 @@ Then, we vary $\texttt{theta1} = \theta_1 \in \{0, 0.1, 0.2, \ldots, 1\}$.
   \end{center}
 \end{figure}
 
-\paragraph{Analysis of Subfigure~\ref{subfig:exp1_nmatch}.} Of course, the proportion of treatment observations matched is monotonically increasing in $c$. This heatmap makes clear that when heterogeneity of the features is too large (even just a single standard deviation apart), the proportion of treatment observations matched may decrease substantially when using the same caliper $c$ (here, we see a decrease of 50\% for $c = 0.05$).
+\paragraph{Analysis of Subfigure~\ref{subfig:exp1_nmatch}.} Of course, the proportion of treatment observations matched is monotonically increasing in $c$. This heatmap makes clear that when heterogeneity of the features is too large (even just a single standard deviation apart), the proportion of treatment observations matched may decrease substantially when using the same caliper $c$ (here, we see a decrease of 50\% for $c = 0.05$). A common ``rule-of-thumb'' desired level of balance is $0.1$ absolute standardized mean difference, which is achieved by larger calipers which match more of the data. Researchers will have to consider this practical trade off between balance and the size of the matched subset.
 \paragraph{Analysis of Subfigure~\ref{subfig:exp1_mean_abs_smd}.} First, we note that the mean absolute standardized mean difference is nearly constant down the leftmost column (with calipers of $c=0.05$); the cost of imbalance was primarily paid in the size of the matched subset. In fact, the test statistics increase very little with imbalance for most values of $c$; only for $c = 0.45$ and $c = 0.50$ is the increase in imbalance from $\theta_1 = 0$ to $\theta_1 = 1$ greater than $0.05$. This suggests some robustness of the caliper, for normally distributed means that differ by no more than a standard deviation of the data. Moreover, we do not observe the Paradox; the propensity score matching performs very well when $\theta_0 = \theta_1 = 0$. This does not disqualify the Paradox -- it could certainly happen -- it just was not present in this multivariate Normally distributed data.
 
 Finally, we should note that the value of $c$ minimizing the test statistic was not necessarily $0.05$ in all cases; in fact, almost all datasets saw equal or better balance achieved by $c = 0.10, c = 0.15,$ and $c = 0.20$. This underscores the importance of thorough parameter search, as well as balance assessment.
 
+\newpage
 \subsection{Experiment 2: Caliper vs Correlation.}
 This experiment seeks to assess the impact that varying correlation among the features has on selection of an optimal caliper. Specifically, it hypothesizes that the optimal choice of caliper will vary significantly as correlation changes; this would be in line with results of the aforementioned~\textcite{austin_optimal_2011}.
 
@@ -457,9 +459,7 @@ Then, we vary $\texttt{rho} = \rho \in \{0, 0.1, 0.2, \ldots, 0.8\}$.
   \end{center}
 \end{figure}
 \paragraph{Analysis of Subfigure~\ref{subfig:exp2_nmatch}.} There is not much discernable pattern in the proportion of observations matched with respect to $\rho$ until $\rho=0.8$, which performs very badly. Interestingly, moderate values of $\rho$ (e.g. $\rho=0.3$) afforded the highest proportion of treatment observations, in some cases much higher than in the case of independent features ($\rho = 0$).
-\paragraph{Analysis of Subfigure~\ref{subfig:exp2_mean_abs_smd}.} There is again not much pattern in the data with respect to $\rho$. This time, even $\rho=0.8$ performs adequately; it has the highest mean absolute standardized mean difference for most values of $c$, but it is generally not ``much worse'' than any of the other cases. In fact, we find that the test statistic is minimized at modest values of $\rho$ (e.g. $\rho=0.3$); this is no doubt correlated with the high-proportion of treatment group observations matched for those same values of $\rho$.
-
-This analysis suggests that propensity score matching was able to produce high-quality matches even when the data generating model consisted of highly correlated features. This is in line with results presented in other research, such as~\textcite{austin_optimal_2011}.
+\paragraph{Analysis of Subfigure~\ref{subfig:exp2_mean_abs_smd}.} There is again not much pattern in the data with respect to $\rho$. This time, even $\rho=0.8$ performs adequately; it has the highest mean absolute standardized mean difference for most values of $c$, but it is generally not ``much worse'' than any of the other cases. In fact, we find that the test statistic is minimized at modest values of $\rho$ (e.g. $\rho=0.3$); this is no doubt correlated with the high-proportion of treatment group observations matched for those same values of $\rho$. This experiment suggests that the propensity score, in combination with a reasonable caliper $c$, is a useful and robust matching metric under the correlated data regimes. This is in line with results presented in other research, such as~\textcite{austin_optimal_2011}.
 
 \section{Conclusion}
 
